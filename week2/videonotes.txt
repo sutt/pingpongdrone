@@ -1,0 +1,202 @@
+
+
+    
+
+   OpenCV Cam control list https://github.com/Itseez/opencv/blob/34957bcfedf39726f01308df3345e9bb6c6b061f/modules/videoio/include/opencv2/videoio.hpp
+
+   Hwo to set params http://stackoverflow.com/questions/11420748/setting-camera-parameters-in-opencv-python
+
+    How to tell if your USB is 3.0? http://superuser.com/questions/756669/how-to-detect-if-a-usb-port-is-3-0-or-2-0
+
+        USB analyzer tool            https://msdn.microsoft.com/en-us/library/windows/hardware/ff551063(v=vs.85).aspx
+    
+        My Computer stats: 2x 3.0's
+        http://support.toshiba.com/support/staticContentDetail?contentId=4002624&isFromTOCLink=false
+        
+    The key to 30fps is turning off RightLight setting in LWS
+        does this have a camera property in opencv?
+        
+    Can get 30FPS @1080p with XVID codec, this really cranks CPU while 680 does not
+    
+    
+    #All the fourcc codecs
+    http://fourcc.org/codecs.php
+
+    #Measured Results
+        Logitech: 640x480 17 fps
+        Logitech Video I420 works for .avi
+
+        Base fourcc for Logitech
+        -466162819.0
+
+        Base fourcc for Builtin
+        844715353.0
+
+    #Getting H264    http://stackoverflow.com/questions/28163201/writing-a-video-file-using-h-264-compression-in-opencv/28188331#28188331
+
+        h264 asks you to go here:
+        https://github.com/cisco/openh264/releases
+        
+        got the win64msvc
+        renamed from v1.5.0 -> 1.4.0
+
+    
+    #Random Guides
+        How to get 30FPS https://forum.openframeworks.cc/t/how-to-use-a-logitech-c920-webcam-with-1080p-resolution-at-30fps/14446/7
+        
+        2103 Guide for OpenCV and codecs
+        http://blog.lemoneerlabs.com/3rdParty/Darling_BBB_30fps_DRAFT.html
+        
+CV_CAP_PROP_POS_MSEC Current position of the video file in milliseconds.
+CV_CAP_PROP_POS_FRAMES 0-based index of the frame to be decoded/captured next.
+CV_CAP_PROP_POS_AVI_RATIO Relative position of the video file: 0 - start of the film, 1 - end of the film.
+CV_CAP_PROP_FRAME_WIDTH Width of the frames in the video stream.
+CV_CAP_PROP_FRAME_HEIGHT Height of the frames in the video stream.
+CV_CAP_PROP_FPS Frame rate.
+CV_CAP_PROP_FOURCC 4-character code of codec.
+CV_CAP_PROP_FRAME_COUNT Number of frames in the video file.
+CV_CAP_PROP_FORMAT Format of the Mat objects returned by retrieve() .
+CV_CAP_PROP_MODE Backend-specific value indicating the current capture mode.
+CV_CAP_PROP_BRIGHTNESS Brightness of the image (only for cameras).
+CV_CAP_PROP_CONTRAST Contrast of the image (only for cameras).
+CV_CAP_PROP_SATURATION Saturation of the image (only for cameras).
+CV_CAP_PROP_HUE Hue of the image (only for cameras).
+CV_CAP_PROP_GAIN Gain of the image (only for cameras).
+CV_CAP_PROP_EXPOSURE Exposure (only for cameras).
+CV_CAP_PROP_CONVERT_RGB Boolean flags indicating whether images should be converted to RGB.
+CV_CAP_PROP_WHITE_BALANCE_U The U value of the whitebalance setting (note: only supported by DC1394 v 2.x backend currently)
+CV_CAP_PROP_WHITE_BALANCE_V The V value of the whitebalance setting (note: only supported by DC1394 v 2.x backend currently)
+CV_CAP_PROP_RECTIFICATION Rectification flag for stereo cameras (note: only supported by DC1394 v 2.x backend currently)
+CV_CAP_PROP_ISO_SPEED The ISO speed of the camera (note: only supported by DC1394 v 2.x backend currently)
+CV_CAP_PROP_BUFFERSIZE Amount of frames stored in internal buffer memory (note: only supported by DC1394 v 2.x backend currently)
+
+
+enum { CAP_PROP_POS_MSEC       =0,
+       CAP_PROP_POS_FRAMES     =1,
+       CAP_PROP_POS_AVI_RATIO  =2,
+       CAP_PROP_FRAME_WIDTH    =3,
+       CAP_PROP_FRAME_HEIGHT   =4,
+       CAP_PROP_FPS            =5,
+       CAP_PROP_FOURCC         =6,
+       CAP_PROP_FRAME_COUNT    =7,
+       CAP_PROP_FORMAT         =8,
+       CAP_PROP_MODE           =9,
+       CAP_PROP_BRIGHTNESS    =10,
+       CAP_PROP_CONTRAST      =11,
+       CAP_PROP_SATURATION    =12,
+       CAP_PROP_HUE           =13,
+       CAP_PROP_GAIN          =14, 
+       CAP_PROP_EXPOSURE      =15,
+       CAP_PROP_CONVERT_RGB   =16,
+       CAP_PROP_WHITE_BALANCE_BLUE_U =17,
+       CAP_PROP_RECTIFICATION =18,
+       CAP_PROP_MONOCHROME    =19,
+       CAP_PROP_SHARPNESS     =20,
+       CAP_PROP_AUTO_EXPOSURE =21, // DC1394: exposure control done by camera, user can adjust refernce level using this feature
+       CAP_PROP_GAMMA         =22,
+       CAP_PROP_TEMPERATURE   =23,
+       CAP_PROP_TRIGGER       =24,
+       CAP_PROP_TRIGGER_DELAY =25,
+       CAP_PROP_WHITE_BALANCE_RED_V =26,
+       CAP_PROP_ZOOM          =27,
+       CAP_PROP_FOCUS         =28,
+       CAP_PROP_GUID          =29,
+       CAP_PROP_ISO_SPEED     =30,
+       CAP_PROP_BACKLIGHT     =32,
+       CAP_PROP_PAN           =33,
+       CAP_PROP_TILT          =34,
+       CAP_PROP_ROLL          =35,
+       CAP_PROP_IRIS          =36,
+       CAP_PROP_SETTINGS      =37,
+       CAP_PROP_BUFFERSIZE    =38,
+       CAP_PROP_AUTOFOCUS     =39
+7 :  -1.0
+8 :  -1.0
+9 :  -1.0
+10 :  128.0
+11 :  128.0
+12 :  128.0
+13 :  -1728020383.0
+14 :  255.0
+15 :  -5.0
+16 :  -1.0
+17 :  2397.0
+18 :  -1.0
+19 :  -1728020383.0
+20 :  128.0
+21 :  -1.0
+22 :  -1728020383.0
+23 :  -1.0
+24 :  -1.0
+25 :  -1.0
+26 :  -1.0
+27 :  100.0
+28 :  0.0
+29 :  -1.0
+30 :  -1.0
+31 :  -1.0
+32 :  0.0
+33 :  0.0
+34 :  0.0
+35 :  -1728020383.0
+36 :  -1728020383.0
+37 :  -1.0
+38 :  -1.0
+39 :  -1.0        
+
+MEDIASUBTYPE_RGB24 640x480 @ 30 fps
+
+MEDIASUBTYPE_RGB24 160x90 @ 30 fps
+MEDIASUBTYPE_RGB24 160x120 @ 30 fps
+MEDIASUBTYPE_RGB24 176x144 @ 30 fps
+MEDIASUBTYPE_RGB24 320x180 @ 30 fps
+MEDIASUBTYPE_RGB24 320x240 @ 30 fps
+MEDIASUBTYPE_RGB24 352x288 @ 30 fps
+MEDIASUBTYPE_RGB24 432x240 @ 30 fps
+MEDIASUBTYPE_RGB24 640x360 @ 30 fps
+MEDIASUBTYPE_RGB24 800x448 @ 30 fps
+MEDIASUBTYPE_RGB24 800x600 @ 30 fps
+MEDIASUBTYPE_RGB24 864x480 @ 30 fps
+MEDIASUBTYPE_RGB24 960x720 @ 30 fps
+MEDIASUBTYPE_RGB24 1024x576 @ 30 fps
+MEDIASUBTYPE_RGB24 1280x720 @ 30 fps
+MEDIASUBTYPE_RGB24 1600x896 @ 30 fps
+MEDIASUBTYPE_RGB24 1920x1080 @ 30 fps
+MEDIASUBTYPE_RGB24 2304x1296 @ 2 fps
+MEDIASUBTYPE_RGB24 2304x1536 @ 2 fps
+MEDIASUBTYPE_I420 640x480 @ 30 fps
+MEDIASUBTYPE_I420 160x90 @ 30 fps
+MEDIASUBTYPE_I420 160x120 @ 30 fps
+MEDIASUBTYPE_I420 176x144 @ 30 fps
+MEDIASUBTYPE_I420 320x180 @ 30 fps
+MEDIASUBTYPE_I420 320x240 @ 30 fps
+MEDIASUBTYPE_I420 352x288 @ 30 fps
+MEDIASUBTYPE_I420 432x240 @ 30 fps
+MEDIASUBTYPE_I420 640x360 @ 30 fps
+MEDIASUBTYPE_I420 800x448 @ 30 fps
+MEDIASUBTYPE_I420 800x600 @ 30 fps
+MEDIASUBTYPE_I420 864x480 @ 30 fps
+MEDIASUBTYPE_I420 960x720 @ 30 fps
+MEDIASUBTYPE_I420 1024x576 @ 30 fps
+MEDIASUBTYPE_I420 1280x720 @ 30 fps
+MEDIASUBTYPE_I420 1600x896 @ 30 fps
+MEDIASUBTYPE_I420 1920x1080 @ 30 fps
+MEDIASUBTYPE_I420 2304x1296 @ 2 fps
+MEDIASUBTYPE_I420 2304x1536 @ 2 fps
+MEDIASUBTYPE_MJPG 640x480 @ 30 fps
+MEDIASUBTYPE_MJPG 160x90 @ 30 fps
+MEDIASUBTYPE_MJPG 160x120 @ 30 fps
+MEDIASUBTYPE_MJPG 176x144 @ 30 fps
+MEDIASUBTYPE_MJPG 320x180 @ 30 fps
+MEDIASUBTYPE_MJPG 320x240 @ 30 fps
+MEDIASUBTYPE_MJPG 352x288 @ 30 fps
+MEDIASUBTYPE_MJPG 432x240 @ 30 fps
+MEDIASUBTYPE_MJPG 640x360 @ 30 fps
+MEDIASUBTYPE_MJPG 800x448 @ 30 fps
+MEDIASUBTYPE_MJPG 800x600 @ 30 fps
+MEDIASUBTYPE_MJPG 864x480 @ 30 fps
+MEDIASUBTYPE_MJPG 960x720 @ 30 fps
+MEDIASUBTYPE_MJPG 1024x576 @ 30 fps
+MEDIASUBTYPE_MJPG 1280x720 @ 30 fps
+MEDIASUBTYPE_MJPG 1600x896 @ 30 fps
+MEDIASUBTYPE_MJPG 1920x1080 @ 30 fps
