@@ -1,6 +1,8 @@
 import sys
 import serial
 
+#DEviceManager/Ports/NumatoLab8 -> COM for device
+
 if (len(sys.argv) < 2):
 	print "Usage: gpiowrite.py <PORT> <GPIONUM> <COMMAND> \nEg: gpiowrite.py COM1 0 set"
 	sys.exit(0)

@@ -30,10 +30,10 @@ class Motor:
 
         self.maxWind = kwargs.get('maxWind', 10)
         self.t = .00025
-        self.t1 = .1
+        self.t1 = .01
         
         self.windDir = kwargs.get('windDir',0)
-        self.stepInd = None     #steps up from baseline 0
+        self.stepInd = 0     #steps up from baseline 0
         self.stepInd2 = None    #count steps in case x
         self.maxUp = None       #how many steps to hit total release
         
@@ -70,8 +70,7 @@ class Motor:
     def up(self,**kwargs):
         steps = kwargs.get('steps',1)
         
-        if ((steps + self.stepInd) > self.maxUp) and \
-            not(kwargs.get(overrideMaxUp,True)):
+        if ((steps + self.stepInd) > self.maxUp) and not(kwargs.get('overrideMaxUp',True)):
             steps = self.maxUp - self.stepInd
             print 'only ', str(steps), ' up'
         

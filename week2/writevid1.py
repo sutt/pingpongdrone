@@ -73,7 +73,7 @@ if args["getcam"]:
 
 if args["setcam"]:
     
-   # First do codec, then fps, then h/w #http://stackoverflow.com/questions/16092802/capturing-1080p-at-30fps-from-logitech-c920-with-opencv-2-4-3
+   # First set codec, then fps, then h/w #http://stackoverflow.com/questions/16092802/capturing-1080p-at-30fps-from-logitech-c920-with-opencv-2-4-3
     if args["toggleframe"]:
         try:
             rrr,fff = cam.read()
