@@ -17,7 +17,7 @@ serPort.write("adc read "+ str(analogChannel) + "\r")
 response = serPort.read(25)
 print response[10:-3]
 
-print response
+#print response
 	
 #Close the port
 serPort.close()
