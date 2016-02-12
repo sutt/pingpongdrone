@@ -1,0 +1,131 @@
+
+## 2.11 ##########
+
+    Built joystick->motor beta
+
+
+## 2.10 ###########
+
+    Leslie Valiant - Ecorithm
+    "PolicyFitness must come from evolution, or individual learning...
+    ...therefore, there must be a unified theory of the two."
+    https://www.quantamagazine.org/20160128-ecorithm-computers-and-life/   
+       
+   
+   
+   Circuit Hacking Night - parts kits http://wiki.artisansasylum.com/index.php/Circuit_Hacking_Night#Electronic_Kits_Available
+   
+        https://artisansasylum.com/current-classes/
+
+
+## 2.2 #############
+
+    Camera software
+    http://support.logitech.com/en_us/product/hd-pro-webcam-c920
+
+    LWS - Logitech Webcam Software
+
+## 1.29 #############
+
+
+    Battery advice
+    http://www.rcgroups.com/forums/showthread.php?t=2540473
+
+        Batteries that work but are out of stock
+        http://www.ebay.com/itm/401019680868?rmvSB=true
+
+    2x5 of these, arriving Feb17-Mar2
+    http://www.ebay.ca/itm/141784148388
+    
+        25 x 15 x 5 mm
+        3.7v 150mAh 30C
+        which is the same as the above, except above is 6mm thick
+
+    Try this?    http://www.ebay.ca/itm/2Pcs-JJRC-H20-RC-Hexacopter-Part-H20-04-3-7V-150mAh-30C-Li-po-Battery-SL6W/252103397822?_trksid=p5713.c100041.m2061&_trkparms=aid%3D333008%26algo%3DRIC.MBE%26ao%3D1%26asc%3D20140529145154%26meid%3Dcdb0e75239e94271977a06d8963d16ed%26pid%3D100041%26rk%3D3%26rkt%3D18%26sd%3D141784148388
+
+    Links to OpenHardware for Biology
+    http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002086
+    
+    Bluehost
+    Wilkinson17!
+
+## 1.23 #############
+
+    Order
+    
+        Pololu:
+            Stepper 4V
+            DRV Motor Driver
+            2x Caps
+            Jumper Cables, for class
+            Servos
+            
+        Adafruit
+            Servos, Drivers
+            LED Kit
+            
+        Amazon
+            Batteries
+            Drone
+        
+
+    "FPV" micro-drone    http://www.banggood.com/Eachine-Falcon-250-FPV-Quadcopter-with-5_8G-32CH-HD-Camera-BNF-p-1028897.html?utm_source=google&utm_medium=youtube&utm_campaign=Cquad-ytb-falcon250arf-300&utm_content=nydia&utm_design=5&gclid=CNyZ7pCTwcoCFYMbHwodqb4F_A
+
+
+### 1.21 ###########
+
+    curses for windows
+    http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses
+    
+    Can we get 5V output for numato?
+    
+   Sample code for numato https://github.com/numato/samplecode/tree/master/RelayAndGPIOModules/USBRelayAndGPIOModules/python/usbgpio8
+
+
+
+### 1.20 ##########
+
+    numato usbgpio8
+    http://numato.com/8-channel-usb-gpio-module-with-analog-inputs/
+
+    
+
+## 1.19 ############
+
+
+	instructions	http://docs.opencv.org/3.0-beta/doc/tutorials/introduction/windows_install/windows_install.html
+
+		download	http://sourceforge.net/projects/opencvlibrary/files/opencv-win/3.1.0/opencv-3.1.0.exe/download
+	
+		insturctions for python http://docs.opencv.org/master/d5/de5/tutorial_py_setup_in_windows.html#gsc.tab=0
+
+
+## 1.18 ############
+
+Ball Tracking in OpenCV
+http://www.pyimagesearch.com/2015/09/14/ball-tracking-with-opencv/
+
+	This looks promising, just get a:
+		PC-USB GPIO,
+		a PC Webcam that works with OpenCV
+		
+	Also get
+		servos
+		jumper wires
+		new steppers
+		stepper wheels
+		
+
+Motion detection on Rpi - slow tho
+http://www.pyimagesearch.com/2015/05/25/basic-motion-detection-and-tracking-with-python-and-opencv/
+
+USB-GPIO:
+
+Advice
+http://electronics.stackexchange.com/questions/61290/usb-to-gpio-module
+
+	numato
+	http://numato.com/8-channel-usb-gpio-module-with-analog-inputs/	https://github.com/numato/samplecode/tree/master/RelayAndGPIOModules/USBRelayAndGPIOModules/python/usbgpio8
+	
+	alternative
+	https://www.adafruit.com/products/2264
