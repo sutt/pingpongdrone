@@ -25,17 +25,17 @@ class Motor:
         self.serPort = Ser.serPort
     
         self.sleepPin = kwargs.get('sleepPin',3)
-        self.dirPin = kwargs.get('sleepPin',2)
-        self.stepPin = kwargs.get('sleepPin',1)
+        self.dirPin = kwargs.get('dirPin',1)
+        self.stepPin = kwargs.get('stepPin',2)
 
         self.maxWind = kwargs.get('maxWind', 10)
         self.t = .00025
-        self.t1 = .01
+        self.t1 = .00025
         
         self.windDir = kwargs.get('windDir',0)
         self.stepInd = 0     #steps up from baseline 0
         self.stepInd2 = None    #count steps in case x
-        self.maxUp = None       #how many steps to hit total release
+        self.maxUp = 99999       #how many steps to hit total release
         
         
     def on(self,**kwargs):
@@ -60,6 +60,8 @@ class Motor:
     def setWindMax(self):
         self.stepInd = 0
         
+    def setReleaseMax(self):
+        self.maxUp = self.stepInd
     
     def wind(self,**kwargs):
         steps = kwargs.get('steps',50)
@@ -70,7 +72,7 @@ class Motor:
     def up(self,**kwargs):
         steps = kwargs.get('steps',1)
         
-        if ((steps + self.stepInd) > self.maxUp) and not(kwargs.get('overrideMaxUp',True)):
+        if ((steps + self.stepInd) > self.maxUp) and not(kwargs.get('overrideMaxUp',False)):
             steps = self.maxUp - self.stepInd
             print 'only ', str(steps), ' up'
         
@@ -82,8 +84,8 @@ class Motor:
         
     def down(self, **kwargs):
         steps = kwargs.get('steps',1)
-        if steps > self.stepInd:
-            steps = stepInd
+        if steps > self.stepInd and not(kwargs.get('overrideMaxDown',False)):
+            steps = self.stepInd
             print ' only ', str(self.stepInd)
         
         self.setDir(self.windDir)

@@ -37,7 +37,8 @@ def calibrateMotor(Motor1):
     while(True):
         
         ret = pause('q to release, w to wind ...', ['q','w','exit', 'reversedir','setwindmax','p','o'])
-    
+
+        
         #respond to input ---------------
         if ret[0] == 'q':
             retsteps = parseQW(ret)
@@ -60,15 +61,22 @@ def calibrateMotor(Motor1):
             return 'im out'
         
         if ret =='p':
-            Motor1.up()
+            Motor1.up(steps=1,overrideMaxUp = True)
             #add no logging
-            return '1 up'
         
         if ret =='o':
-            Motor1.down()
-            return '1 down'
+            Motor1.down(steps=1,overrideMaxDown = True)
         
-        print 'cmd not understood nor processed'
+        if ret =='off':
+            Motor1.off()
+            
+        if ret =='on':
+            Motor1.on()
+        
+        
+
+        
+        print str(Motor1.stepInd)
         
     return 'never exit this way' #------------------------------
     

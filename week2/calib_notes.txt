@@ -1,0 +1,28 @@
+
+
+    TODO:
+        4x step in calib
+            single increment calib
+            test 4x hypothesis
+            4x steps logic
+            4x timing
+            
+            
+    4x hypothesis: 
+    
+        p: 2 steps on, 2 steps off
+        o: 1 step on, 3 steps off
+        
+        Does it change based on:
+        
+            position?
+            
+            reversedir?
+            
+            
+   
+   DVR8834 diagram https://docs.google.com/spreadsheets/d/1OF6rxXoxPcZXUF-d7OwGtUwm55SPyNQD3ihfc1c2Ops/edit#gid=3
+   
+   
+   
+   
