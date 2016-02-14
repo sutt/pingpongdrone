@@ -90,7 +90,7 @@ class Motor:
         
         self.setDir(self.windDir)
         
-        self.step(steps = steps, secs = self.t1)
+        self.step(steps = steps, secs = kwargs.get('t', self.t1))
         self.stepInd = self.stepInd - steps
         return 1
         
