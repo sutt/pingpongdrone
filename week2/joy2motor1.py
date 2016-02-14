@@ -5,19 +5,14 @@ import thread
 import threading
 import math
 
+import steering 
+from imports.Motor import Motor as Motor
+from imports.Motor import MySerial as MySerial    
+
 joy = 500
 poll_delay = .1 #.05
 actuate_delay = .2 #.05
 read_duration = 8 * 4
-
-#Why is pySerial so slow? set timeout / eol for read
-#http://stackoverflow.com/questions/19908167/reading-serial-data-in-realtime-in-python
-
-#python numatoshell.py COM3 4 set   #this sets IO4 to high for VCC
-#now you can read from analog4 which is IO6 (IO4 does not have analog)
-
-#use Queue to share data between threads
-#http://stackoverflow.com/questions/16044452/sharing-data-between-threads-in-python
 
 pollHz = 60
 gAccel = 0
@@ -48,21 +43,22 @@ def actuateMotor(accel, mMotor):
     return time.time() - entryTime
 
 
-def actuate():
+def actuate(Ser1):
     
     #global gAccel
     #global gPos
     
     #Init Motor
-    #Ser1 = MySerial()
-    #gMotor = Motor(Ser1)
+    initMotor = Motor(Ser1)
+    
+    gMotor = steering.calibrateMotor(initMotor)
     
     while True:
         #print ['down','up'][int(gPos > 500)], str(gAccel - 500)
         print "gPos:", str(gPos)
         print "gAccel: ", str(gAccel)
-        #actuateMotor(gAccel,gMotor)
-        time.sleep(.1)
+        actuateMotor(gAccel,gMotor)
+        time.sleep(.01)
         #pass
         
 def setAccel(line):
@@ -86,15 +82,15 @@ def setAccel(line):
     return accel
         
         
-def poll(**kwargs): 
+def poll(serPort,**kwargs): 
 
     global gAccel
-    portName = "COM3" 
+    #portName = "COM3" 
     analogChannel = 4  
-    serPort = serial.Serial(portName, 19200, timeout=.05)  #or 15200?
+    #serPort = serial.Serial(portName, 19200, timeout=.05)  #or 15200?
 
     while True:
-        
+        print 'in poll'
         etime = time.time()
         try:
             serPort.write("adc read "+ str(analogChannel) + "\r")
@@ -103,7 +99,7 @@ def poll(**kwargs):
             ret = "err"
         #print ret
         gAccel = setAccel(ret)
-        #print gAccel
+        print gAccel
         
         poll_delay = max(time.time() - etime - (1.0 / float(pollHz)),0)
         
@@ -113,8 +109,11 @@ def poll(**kwargs):
         
     return 
 
-t1 = threading.Thread(target=poll)
+    
+myserial = MySerial(timeout = .05)
+
+t1 = threading.Thread(target=poll, args = (myserial,))
 t1.start()
 
-t2 = threading.Thread(target=actuate)
+t2 = threading.Thread(target=actuate, args = (myserial,))
 t2.start()

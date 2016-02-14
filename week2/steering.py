@@ -59,7 +59,8 @@ def calibrateMotor(Motor1):
         
         if ret == 'exit':
             return 'im out'
-        
+            return Motor1
+            
         if ret =='p':
             Motor1.up(steps=1,overrideMaxUp = True)
             #add no logging

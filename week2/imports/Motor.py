@@ -11,7 +11,8 @@ class MySerial:
     def __init__(self,**kwargs):
         
         portName = kwargs.get('portname','COM3')
-        self.serPort = serial.Serial(portName, 19200, timeout=1)
+        timeOut = kwargs.get('timeout',1.0)
+        self.serPort = serial.Serial(portName, 19200, timeout=timeOut)
         
     def test(self,**kwargs):
         """ return info about the serial-port comm """
