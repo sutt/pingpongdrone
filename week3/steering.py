@@ -36,7 +36,7 @@ def calibrateMotor(Motor1):
     #Now loop untill configured
     while(True):
         
-        ret = pause('q to release, w to wind ...', ['q','w','exit', 'reversedir','setwindmax','p','o'])
+        ret = pause('q to release, w to wind ...', ['q','w','exit', 'reversedir','setwindmax','p','o', 'outputlog'])
 
         
         #respond to input ---------------
@@ -52,6 +52,9 @@ def calibrateMotor(Motor1):
             
         if ret == 'reversedir':
             Motor1.windDir = -1*(Motor1.windDir - 1)
+        
+        if ret == 'outputlog':
+            Motor1.outputlog()
         
         if ret == 'setwindmax':
             Motor1.setWindMax()

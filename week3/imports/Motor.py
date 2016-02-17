@@ -124,18 +124,19 @@ class Motor:
                 time.sleep(secs)
                 self.serPort.write(gpioapi(self.stepPin,'set'))
                 time.sleep(secs)
-                log1.append(time.time() - before)
-                log2.append(1)
+                self.log1.append(time.time() - before)
+                self.log2.append(1)
             except:
                 print 'motor-step-err'
-                log1.apend(time.time() - before)
-                log2.append(0)
+                self.log1.append(time.time() - before)
+                self.log2.append(0)
         return steps
         
     def outputlog(self,**kwargs):
-        str_output = "\n".join(self.log1)
+        str_output = map(lambda s: str(s), self.log1)
+        str_output = "\n".join(str_output)
         print str_output
-        return 1
+        return 1    
 
     def gotoBottom(self, **kwargs):
         self.down(steps = self.stepInd, secs = self.t)

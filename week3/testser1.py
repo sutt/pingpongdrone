@@ -33,7 +33,7 @@ class MySerial:
     def __init__(self,**kwargs):
         
         portName = kwargs.get('portname','COM3')
-        timeOut = kwargs.get('timeout',1.0)
+        timeOut = kwargs.get('timeout',10)
         baud = kwargs.get('baud',19200)
         self.serPort = serial.Serial(portName, baud, timeout=timeOut)
         
@@ -101,11 +101,11 @@ def testSerGILInterval(InpSer,**kwargs):
     
 if __name__ == "__main__":
     
-    MySer = MySerial(timeout = .1 ,baud=15200) 
+    MySer = MySerial(timeout = 10.0 ,baud=19200) 
     
-    ss = float(float(1)/float(1000))
+    ss = 0 #float(float(1)/float(1000))
     
-    testSerGILInterval(MySer,msunits=True,trials = 100,gap=True,sleepy = ss)
+    testSerGILInterval(MySer,msunits=True,trials = 1000,gap=True,sleepy = ss)
     
     
 # 1. Check if joy2motor works when serPort.serPort.write is used

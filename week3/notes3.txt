@@ -2,7 +2,11 @@
 
     Copy necessary files to week3 to run steering
     Then build a time logging on Motor step func
-    Then check if 
+    Then check if Motor has latency?
+        -> yes a 15ms, every 33 writes
+        
+    Try a threading app with locks
+        build a joystick class
     
     
     Misc
