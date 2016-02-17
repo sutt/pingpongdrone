@@ -38,6 +38,9 @@ class Motor:
         self.stepInd2 = None    #count steps in case x
         self.maxUp = 99999       #how many steps to hit total release
         
+        self.log1 = []
+        self.log2 = []
+        
         
     def on(self,**kwargs):
         self.serPort.write(gpioapi(self.sleepPin, 'set' ))
@@ -79,7 +82,10 @@ class Motor:
         
         self.setDir(int(-1*(self.windDir-1)))  #opposite of windDir
         
-        self.step(steps = steps, secs = self.t1)
+        if kwargs.get('log',False):
+            self.logstep(steps = steps, secs = self.t1)
+        else:
+            self.step(steps = steps, secs = self.t1)
         self.stepInd = steps + self.stepInd
         return 1
         
@@ -91,7 +97,11 @@ class Motor:
         
         self.setDir(self.windDir)
         
-        self.step(steps = steps, secs = kwargs.get('t', self.t1))
+        if kwargs.get('log',False):
+            self.logstep(steps = steps, secs = self.t1)
+        else:
+            self.step(steps = steps, secs = kwargs.get('t', self.t1))
+
         self.stepInd = self.stepInd - steps
         return 1
         
@@ -105,6 +115,27 @@ class Motor:
             except:
                 print 'motor-step-err'
         return steps
+        
+    def logstep(self,steps,secs):
+        for s in range(steps):
+            before = time.time()
+            try:
+                self.serPort.write(gpioapi(self.stepPin,'clear'))
+                time.sleep(secs)
+                self.serPort.write(gpioapi(self.stepPin,'set'))
+                time.sleep(secs)
+                log1.append(time.time() - before)
+                log2.append(1)
+            except:
+                print 'motor-step-err'
+                log1.apend(time.time() - before)
+                log2.append(0)
+        return steps
+        
+    def outputlog(self,**kwargs):
+        str_output = "\n".join(self.log1)
+        print str_output
+        return 1
 
     def gotoBottom(self, **kwargs):
         self.down(steps = self.stepInd, secs = self.t)

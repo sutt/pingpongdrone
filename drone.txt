@@ -1,4 +1,12 @@
 
+## 2.13 #########
+
+    rpicopter repo
+    https://code.google.com/archive/p/rpicopter/
+    
+   how to share serial objects among threads http://stackoverflow.com/questions/4043193/python-how-to-share-a-serial-port-with-two-different-threads-class-a-class-b
+
+
 ## 2.11 ##########
 
     Built joystick->motor beta

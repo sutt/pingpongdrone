@@ -2,10 +2,6 @@ import sys
 import serial
 import time
 
-import sys
-import time
-import serial
-
 from imports.Motor import Motor as Motor
 from imports.Motor import MySerial as MySerial    
     
@@ -15,13 +11,13 @@ from imports.Motor import MySerial as MySerial
 def pause(dispTxt, breaker):
     while(True):
         inp = raw_input(dispTxt)
-        if any(keywors in inp for keywords in breaker):
+        if any(keywords in inp for keywords in breaker):
             return inp
     
 def parseQW(cmd):
     """cmd of form <q> <N> or <qqq...q> """
     words = cmd.split(' ')
-    if len(words) > 1
+    if len(words) > 1:
         return int(words[1])
     return max( [ words[0].count(s) for s in ["q","w"]] )
     
@@ -40,18 +36,18 @@ def calibrateMotor(Motor1):
     #Now loop untill configured
     while(True):
         
-    ret = pause('q to release, w to wind ...', \
-                ['q','w','exit', 'reversedir','setwindmax'])
+        ret = pause('q to release, w to wind ...', ['q','w','exit', 'reversedir','setwindmax','p','o'])
+
         
         #respond to input ---------------
         if ret[0] == 'q':
             retsteps = parseQW(ret)
-            Motor1.up(steps = retsteps)
+            Motor1.up(steps = retsteps, log=True)
             print str(retsteps)
         
         if ret[0] == 'w':
             retsteps = parseQW(ret)
-            Motor1.down(steps = retsteps)
+            Motor1.down(steps = retsteps, log=True)
             print str(retsteps)
             
         if ret == 'reversedir':
@@ -61,16 +57,34 @@ def calibrateMotor(Motor1):
             Motor1.setWindMax()
             print 'wound, stepind: ', str(Motor1.stepInd)
         
-        if ret == 'exit'
+        if ret == 'exit':
             return 'im out'
+            return Motor1
             
-    return 'never exit this way' #------------------------------
-    
-#START
-if __name__=="__main__":
+        if ret =='p':
+            Motor1.up(steps=1,overrideMaxUp = True)
+            #add no logging
+        
+        if ret =='o':
+            Motor1.down(steps=1,overrideMaxDown = True)
+        
+        if ret =='off':
+            Motor1.off()
+            
+        if ret =='on':
+            Motor1.on()
+        
+        
 
+        
+        print str(Motor1.stepInd)
+        
+    return 'never exit this way' #------------------------------
+
+if __name__=="__main__":    
+    #START
     Ser1 = MySerial()
-    Motor1 = initMotor(Ser1)
+    Motor1 = motorInit(Ser1)
 
     Motor1.on()
     calibrateMotor(Motor1)
@@ -83,9 +97,9 @@ if __name__=="__main__":
     print str(Motor1.stepInd)
 
     time.sleep(1)
-    Motor1.up(400)
-    Motor1.up(200)
-    Motor1.down(100)
+    Motor1.up(steps=400)
+    Motor1.up(steps=200)
+    Motor1.down(steps=100)
     print str(Motor1.stepInd)
 
     Motor1.off()

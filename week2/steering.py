@@ -80,33 +80,34 @@ def calibrateMotor(Motor1):
         print str(Motor1.stepInd)
         
     return 'never exit this way' #------------------------------
-    
-#START
-Ser1 = MySerial()
-Motor1 = motorInit(Ser1)
 
-Motor1.on()
-calibrateMotor(Motor1)
+if __name__=="__main__":    
+    #START
+    Ser1 = MySerial()
+    Motor1 = motorInit(Ser1)
 
-time.sleep(3)
-Motor1.off()
-time.sleep(3)
+    Motor1.on()
+    calibrateMotor(Motor1)
 
-Motor1.on()
-print str(Motor1.stepInd)
+    time.sleep(3)
+    Motor1.off()
+    time.sleep(3)
 
-time.sleep(1)
-Motor1.up(steps=400)
-Motor1.up(steps=200)
-Motor1.down(steps=100)
-print str(Motor1.stepInd)
+    Motor1.on()
+    print str(Motor1.stepInd)
 
-Motor1.off()
-print str(Motor1.stepInd)
+    time.sleep(1)
+    Motor1.up(steps=400)
+    Motor1.up(steps=200)
+    Motor1.down(steps=100)
+    print str(Motor1.stepInd)
 
-time.sleep(2)
-Motor1.on()
-print str(Motor1.stepInd)
+    Motor1.off()
+    print str(Motor1.stepInd)
+
+    time.sleep(2)
+    Motor1.on()
+    print str(Motor1.stepInd)
 
 
 ##EXAMPLE for calibrate phase

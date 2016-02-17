@@ -1,0 +1,11 @@
+# 2.16
+
+    Copy necessary files to week3 to run steering
+    Then build a time logging on Motor step func
+    Then check if 
+    
+    
+    Misc
+        800 steps back and forth 100x times, does it end same place?
+            Note - every flight ~ 20 secs / 80 dir changes, gives chance to recalib motor so this isn't a huge problem to p.o.c.
+        Finer resolution for time logging?
