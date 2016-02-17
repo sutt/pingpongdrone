@@ -158,7 +158,7 @@ def poll(JoyObj,**kwargs):
         
         #print ret
         gAccel = setAccel(ret)
-        #print gAccel
+        print gAccel
         
         poll_delay = (1.0 / float(pollHz)) - (time.time() - etime)
         if poll_delay > 0:
@@ -167,8 +167,12 @@ def poll(JoyObj,**kwargs):
         
     return 1
 
-    
+def gpioapi(pinNum, command):
+        return "gpio " + str(command) + " " + str(pinNum) +  "\r"
+        
 myserial = MySerial(timeout = .05)
+
+myserial.serPort.write(gpioapi(4,'set'))
 
 Joy = Joystick(myserial)
 
