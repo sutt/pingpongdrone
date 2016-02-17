@@ -28,8 +28,8 @@ class Joystick:
             self.lock = threading.Lock()
         else:
             self.lock = None
-        self.lockmeread = kwargs.get('lockmeread',False)
-        
+        #self.lockmeread = kwargs.get('lockmeread',False)
+        self.lockmeread = True
         
     def writeit(self):
         if self.lockme:
@@ -71,18 +71,28 @@ def actuateMotor(accel, mMotor):
     # 0-500 -> 1-> .00025
     accelPeriod = 1.0 / float(1+(8*accel))  
     
-    intervalSteps = int(actuateInterval / accelPeriod)
-    modInterval =  actuateInterval % accelPeriod 
-    
-    if accel > 0:
-        mMotor.up(steps = intervalSteps, t = accelPeriod)
-        time.sleep(modInterval)
-    elif accel < 0:
-        mMotor.down(steps = intervalSteps, t = accelPeriod)
-        time.sleep(modInterval)
-    elif accel == 0:
-        time.sleep(actuateInterval)
-        
+    #intervalSteps = int(actuateInterval / accelPeriod)
+    #modInterval =  actuateInterval % accelPeriod 
+    intervalSteps = 40
+    accelPeriod = .01
+    #modInterval = .01
+    print 'steps: ', str(intervalSteps)
+    print 't: ', str(accelPeriod)
+    try:
+        if accel > 0:
+            print 'going'
+            mMotor.up(steps = intervalSteps, t = accelPeriod)
+            
+            #time.sleep(modInterval)
+            time.sleep(.01)
+        elif accel < 0:
+            mMotor.down(steps = intervalSteps, t = accelPeriod)
+            #time.sleep(modInterval)
+            time.sleep(.01)
+        elif accel == 0:
+            time.sleep(actuateInterval)
+    except:
+        print 'actuateMotor err'
     return time.time() - entryTime
 
 # helpers ----------------------------------
@@ -104,7 +114,7 @@ def actuate(Ser1):
     
     #Init Motor
     iniMotor = motorInit(Ser1)
-    gMotor = steering.calibrateMotor(iniMotor)
+    steering.calibrateMotor(iniMotor)
     
     while True:
         #print ['down','up'][int(gPos > 500)], str(gAccel - 500)
@@ -112,8 +122,8 @@ def actuate(Ser1):
         #print "gAccel: ", str(gAccel)
         
         try:
-            actuateMotor(gAccel,gMotor)
-            time.sleep(.01)
+            actuateMotor(gAccel,iniMotor)
+            time.sleep(1)
         except:
             print 'motor-err'
         
@@ -142,9 +152,7 @@ def setAccel(line):
         
 def poll(JoyObj,**kwargs): 
 
-    serPort = JoyObj.serPort
     global gAccel
-    analogChannel = 4  
 
     while True:
         
@@ -167,17 +175,23 @@ def poll(JoyObj,**kwargs):
         
     return 1
 
+
 def gpioapi(pinNum, command):
         return "gpio " + str(command) + " " + str(pinNum) +  "\r"
+
+        
         
 myserial = MySerial(timeout = .05)
 
 myserial.serPort.write(gpioapi(4,'set'))
-
 Joy = Joystick(myserial)
 
 t1 = threading.Thread(target=poll, args = (Joy,))  #lockme=True,
 t1.start()
 
-#t2 = threading.Thread(target=actuate, args = (myserial,))
-#t2.start()
+t2 = threading.Thread(target=actuate, args = (myserial,))
+t2.start()
+
+
+
+

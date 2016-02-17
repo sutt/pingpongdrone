@@ -74,6 +74,7 @@ class Motor:
         self.step(steps, secs)
         
     def up(self,**kwargs):
+        print 'up'
         steps = kwargs.get('steps',1)
         
         if ((steps + self.stepInd) > self.maxUp) and not(kwargs.get('overrideMaxUp',False)):
@@ -82,10 +83,12 @@ class Motor:
         
         self.setDir(int(-1*(self.windDir-1)))  #opposite of windDir
         
+        _t = kwargs.get('t', self.t1)
+        
         if kwargs.get('log',False):
-            self.logstep(steps = steps, secs = self.t1)
+            self.logstep(steps = steps, secs = _t)
         else:
-            self.step(steps = steps, secs = self.t1)
+            self.step(steps = steps, secs = _t)
         self.stepInd = steps + self.stepInd
         return 1
         
@@ -97,10 +100,12 @@ class Motor:
         
         self.setDir(self.windDir)
         
+        _t = kwargs.get('t', self.t1)
+        
         if kwargs.get('log',False):
-            self.logstep(steps = steps, secs = self.t1)
+            self.logstep(steps = steps, secs = _t)
         else:
-            self.step(steps = steps, secs = kwargs.get('t', self.t1))
+            self.step(steps = steps, secs = _t)
 
         self.stepInd = self.stepInd - steps
         return 1
