@@ -72,11 +72,11 @@ def actuateMotor(accel, mMotor):
     
     #intervalSteps = int(actuateInterval / accelPeriod)
     #modInterval =  actuateInterval % accelPeriod 
-    intervalSteps = 8
-    accelPeriod = .01
+    intervalSteps = 40
+    accelPeriod = .00025
     #modInterval = .01
-    print 'steps: ', str(intervalSteps)
-    print 't: ', str(accelPeriod)
+    #print 'steps: ', str(intervalSteps)
+    #print 't: ', str(accelPeriod)
     try:
         if accel > 0:
             print 'upping'
@@ -136,7 +136,7 @@ def actuate(Ser1):
         try:
             print "Actuate gAccel: ", str(gAccel)
             actuateMotor(gAccel,iniMotor)
-            time.sleep(2)
+            #time.sleep(2)
         except:
             print 'motor-actuate-err'
         
@@ -170,7 +170,7 @@ def poll(JoyObj,**kwargs):
     while True:
         
         etime = time.time()
-        print 'POLLING!'
+        
         try:
             #JoyObj.acquireLock()
             #JoyObj.writeit()
@@ -180,10 +180,10 @@ def poll(JoyObj,**kwargs):
         except:
             ret = "poll err"
         
-        print 'POLL ret: ', str(ret)
-        print '~~/ret'
+        #print 'POLL ret: ', str(ret)
+        #print '~~/ret'
         gAccel = setAccel(ret)
-        print 'poll gAccel: ', str(gAccel)
+        #print 'poll gAccel: ', str(gAccel)
         
         poll_delay = (1.0 / float(pollHz)) - (time.time() - etime)
         if poll_delay > 0:

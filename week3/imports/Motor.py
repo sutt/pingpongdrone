@@ -22,7 +22,7 @@ class MySerialLock:
         lock = kwargs.get('lock', self.lockwrite)
         if lock:
             self.lock.acquire()
-            print 'LOCK--------------'
+            #print 'LOCK--------------'
         try:
             #print cmd
             self.serPort.write(cmd)         
@@ -32,7 +32,7 @@ class MySerialLock:
         finally:
             if lock:
                 self.lock.release()
-                print 'un______________LOCK'
+                #print 'un______________LOCK'
     
     def readSer(self,cmd,**kwargs):
         lock = kwargs.get('lock', self.lockread)
@@ -55,7 +55,7 @@ class MySerialLock:
         lock = kwargs.get('lock', self.lockwrite)
         if lock:
             self.lock.acquire()
-            print 'LOCK--------------joy'
+            #print 'LOCK--------------joy'
         
         #serial.flush?
         try:
@@ -70,14 +70,15 @@ class MySerialLock:
         
         try:
             ret = self.serPort.read(8*4)
-            print 'doJoy ret: ', ret
+            #print 'DOJOY ret: ', ret
+            #print '~~/ret'
         except:
             print 'unable to joy read'
             ret = 'nope'
         
         if lock:
             self.lock.release()
-            print 'un______________LOCKjoy'
+            #print 'un______________LOCKjoy'
 
         return ret
     
