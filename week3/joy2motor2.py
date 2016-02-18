@@ -6,57 +6,56 @@ import threading
 import math
 
 import steering 
-from imports.Motor import Motor as Motor
+from imports.Motor import Motor2 as Motor
 from imports.Motor import MySerial as MySerial    
-
+from imports.Motor import MySerialLock as MySerialLock
+    
 joy = 500
 poll_delay = .1 #.05
 actuate_delay = .2 #.05
 read_duration = 8 * 4
 
-pollHz = 6
+pollHz = 4
 gAccel = 0
 gPos = 500
 
 #class Joystick(threading.Thread):
 class Joystick:
     def __init__(self,serPortHandle,**kwargs):
-        self.serPort = serPortHandle.serPort   #this is .Serial
-        #self.lockme = kwargs.get('lockme',False)
-        self.lockme=True
-        if self.lockme:
-            self.lock = threading.Lock()
-        else:
-            self.lock = None
-        #self.lockmeread = kwargs.get('lockmeread',False)
-        self.lockmeread = True
+        self.serPort = serPortHandle   #this is .Serial
+        
         
     def writeit(self):
-        if self.lockme:
-            self.lock.acquire()
+        
         try:
             analogChannel = 4  
-            
-            self.serPort.write("adc read "+ str(analogChannel) + "\r")
+            cmd = "adc read " + str(analogChannel) + "\r"
+            self.serPort.writeSer(cmd,lock=True)
         except:
             print 'joystick-write-err'
-        finally:
-            if self.lockme:
-                self.lock.release()
+        
         return 1
                 
     def readit(self):
-        if self.lockmeread:
-            self.lock.acquire()
+        
         try:
-            ret = self.serPort.read(read_duration)
+            ret = self.serPort.readSer(read_duration,lock=False)
         except:
             print 'joystick-read-err'
             ret = 'read-err'
-        finally:
-            if self.lockmeread:
-                self.lock.release()
         return ret
+    
+    def acquireLock(self):
+        self.serPort.acquireLock()
+        return 1
+        
+    def releaseLock(self):
+        self.serPort.releaseLock()
+        return 1
+    
+    def doJoy(self):
+        return self.serPort.doJoy(lock=True)
+        
     
     def hello(self):
         print 'world'
@@ -73,19 +72,20 @@ def actuateMotor(accel, mMotor):
     
     #intervalSteps = int(actuateInterval / accelPeriod)
     #modInterval =  actuateInterval % accelPeriod 
-    intervalSteps = 40
+    intervalSteps = 8
     accelPeriod = .01
     #modInterval = .01
     print 'steps: ', str(intervalSteps)
     print 't: ', str(accelPeriod)
     try:
         if accel > 0:
-            print 'going'
+            print 'upping'
             mMotor.up(steps = intervalSteps, t = accelPeriod)
             
             #time.sleep(modInterval)
             time.sleep(.01)
         elif accel < 0:
+            print 'downing'
             mMotor.down(steps = intervalSteps, t = accelPeriod)
             #time.sleep(modInterval)
             time.sleep(.01)
@@ -113,8 +113,20 @@ def motorInit(Ser):
 def actuate(Ser1):
     
     #Init Motor
-    iniMotor = motorInit(Ser1)
-    steering.calibrateMotor(iniMotor)
+    #iniMotor = motorInit(Ser1)
+    
+    pause('Y to continue ...', ['Y'])
+    iniMotor = Motor(Ser1)
+    iniMotor.on()
+    
+    # try:
+        # pause("ini from actuate>...Y to continue","Y")
+        # iniMotor.up(steps = 800, t = .00025,log=True)
+        # time.sleep(1)
+        # iniMotor.down(steps = 800, t = .00025)
+    # except:
+        # print 'COULDNT CALIBRATE'
+    #steering.calibrateMotor(iniMotor)
     
     while True:
         #print ['down','up'][int(gPos > 500)], str(gAccel - 500)
@@ -122,10 +134,11 @@ def actuate(Ser1):
         #print "gAccel: ", str(gAccel)
         
         try:
+            print "Actuate gAccel: ", str(gAccel)
             actuateMotor(gAccel,iniMotor)
-            time.sleep(1)
+            time.sleep(2)
         except:
-            print 'motor-err'
+            print 'motor-actuate-err'
         
         #pass
         
@@ -157,16 +170,20 @@ def poll(JoyObj,**kwargs):
     while True:
         
         etime = time.time()
-        
+        print 'POLLING!'
         try:
-            JoyObj.writeit()
-            ret = JoyObj.readit()
+            #JoyObj.acquireLock()
+            #JoyObj.writeit()
+            #ret = JoyObj.readit()
+            #JoyObj.releaseLock()
+            ret = JoyObj.doJoy()
         except:
             ret = "poll err"
         
-        #print ret
+        print 'POLL ret: ', str(ret)
+        print '~~/ret'
         gAccel = setAccel(ret)
-        print gAccel
+        print 'poll gAccel: ', str(gAccel)
         
         poll_delay = (1.0 / float(pollHz)) - (time.time() - etime)
         if poll_delay > 0:
@@ -181,7 +198,7 @@ def gpioapi(pinNum, command):
 
         
         
-myserial = MySerial(timeout = .05)
+myserial = MySerialLock(timeout = .05)
 
 myserial.serPort.write(gpioapi(4,'set'))
 Joy = Joystick(myserial)

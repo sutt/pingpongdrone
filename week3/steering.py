@@ -42,7 +42,7 @@ def calibrateMotor(Motor1):
         #respond to input ---------------
         if ret[0] == 'q':
             retsteps = parseQW(ret)
-            Motor1.up(steps = retsteps, log=True)
+            Motor1.up(steps = retsteps, log=False)
             print str(retsteps)
         
         if ret[0] == 'w':
