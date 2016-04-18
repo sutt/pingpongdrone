@@ -128,8 +128,8 @@ class Motor:
         self.stepPin = kwargs.get('stepPin',2)
 
         self.maxWind = kwargs.get('maxWind', 1000)
-        self.t = .01 #.00025
-        self.t1 = .01  #.00025
+        self.t = .00025 #.01 #.00025
+        self.t1 = .00025 #.01  #.00025
         
         self.windDir = kwargs.get('windDir',0)
         self.stepInd = 0     #steps up from baseline 0
@@ -226,9 +226,9 @@ class Motor:
         for s in range(steps):
             before = time.time()
             try:
-                self.serPort.writeSer(gpioapi(self.stepPin,'clear'))
+                self.serPort.write(gpioapi(self.stepPin,'clear'))
                 time.sleep(secs)
-                self.serPort.writeSer(gpioapi(self.stepPin,'set'))
+                self.serPort.write(gpioapi(self.stepPin,'set'))
                 time.sleep(secs)
                 self.log1.append(time.time() - before)
                 self.log2.append(1)
