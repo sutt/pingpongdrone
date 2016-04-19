@@ -57,7 +57,8 @@ class MySerialLock:
             getLock = True
             while(getLock):
                 try:
-                    print 'try for it'
+                    if kwargs.get('logJoy',False):
+                        print 'try for it'
                     self.lock.acquire()
                     getLock = False
                 except:
@@ -78,8 +79,9 @@ class MySerialLock:
         
         try:
             ret = self.serPort.read(8*4)
-            print 'DOJOY ret: ', ret
-            print '~~/ret'
+            if kwargs.get('logJoy',False):
+                print 'DOJOY ret: ', ret
+                print '~~/ret'
         except:
             print 'unable to joy read'
             ret = 'nope'
@@ -261,8 +263,8 @@ class Motor2:
         self.stepPin = kwargs.get('stepPin',2)
 
         self.maxWind = kwargs.get('maxWind', 10)
-        self.t = .001 #.00025
-        self.t1 = .001 #.00025
+        self.t = .00025
+        self.t1 = .00025
         
         self.windDir = kwargs.get('windDir',0)
         self.stepInd = 0     #steps up from baseline 0
