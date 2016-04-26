@@ -207,7 +207,7 @@ class Motor:
         return 1
         
     def down(self, **kwargs):
-        print 'down'
+        #print 'down'
         steps = kwargs.get('steps',1)
         if steps > self.stepInd and not(kwargs.get('overrideMaxDown',False)):
             steps = self.stepInd
@@ -332,7 +332,7 @@ class Motor2:
         self.step(steps, secs)
         
     def up(self,**kwargs):
-        print 'up'
+        #print 'up'
         steps = kwargs.get('steps',1)
             
         if ((steps + self.stepInd) > self.maxUp) and not(kwargs.get('overrideMaxUp',False)):

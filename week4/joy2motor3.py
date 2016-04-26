@@ -15,6 +15,8 @@ poll_delay = .1 #.05
 actuate_delay = .2 #.05
 read_duration = 8 * 4
 
+iniTime = time.time()
+
 pollHz = 4
 gAccel = 0
 gPos = 500
@@ -68,28 +70,39 @@ def actuateMotor(accel, mMotor):
     
     #This is half the period time "on, off, on"
     # 0-500 -> 1-> .00025
-    accelPeriod = 1.0 / float(1+(8*accel))  
-    
+    #accelPeriod = 1.0 / float(1+(8*accel))  
     #intervalSteps = int(actuateInterval / accelPeriod)
     #modInterval =  actuateInterval % accelPeriod 
-    intervalSteps = 40
-    accelPeriod = .00025
-    #modInterval = .01
-    #print 'steps: ', str(intervalSteps)
-    #print 't: ', str(accelPeriod)
+    
+    #intervalSteps = 40
+    accelPeriod = .005
+    epsilon = float((.001 * 8 * 4) + .01)  #polling locks serial
+    epsilon = 0.1
+    intervalSteps = int(float(actuateInterval - epsilon) / float(accelPeriod*2))
+    #intervalSteps = 20
+    #print 'intervalSteps', str(intervalSteps)
+    
     try:
         if accel > 0:
-            print 'upping'
             mMotor.up(steps = intervalSteps, t = accelPeriod)
-            
-            #time.sleep(modInterval)
-            time.sleep(.01)
+            modInterval = actuateInterval - (time.time() - entryTime) 
+            if modInterval < 0:
+                print 'LAG up', str(modInterval)
+            else:
+                print 'ahead up', str(modInterval)
+                time.sleep(modInterval)
+                
         elif accel < 0:
-            print 'downing'
+            #print 'downing'
             mMotor.down(steps = intervalSteps, t = accelPeriod, \
             overrideMaxDown=False)
-            #time.sleep(modInterval)
-            time.sleep(.01)
+            modInterval = actuateInterval - (time.time() - entryTime)
+            if modInterval < 0:
+                print 'LAG down', str(modInterval)
+            else:
+                print 'ahead down', str(modInterval)
+                time.sleep(modInterval)
+            
         elif accel == 0:
             time.sleep(actuateInterval)
     except:
@@ -122,6 +135,9 @@ def actuate(mMotor, **kwargs):
             if kwargs.get('log',False):
                 print "Actuate gAccel: ", str(gAccel)
             actuateMotor(gAccel,mMotor)
+            
+            #print "Actuate: ", str(time.time() - iniTime)
+            
         except:
             print 'motor-actuate-err'
 
@@ -173,6 +189,8 @@ def poll(JoyObj,**kwargs):
         if poll_delay > 0:
             time.sleep(poll_delay)
         #return time.time() - etime
+        
+        #print "Poll: ", str(time.time() - iniTime)
         
     return 1
 
