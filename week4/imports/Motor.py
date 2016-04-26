@@ -380,6 +380,7 @@ class Motor2:
         return steps
         
     def logstep(self,steps,secs):
+        print 'logstep'
         for s in range(steps):
             before = time.time()
             try:

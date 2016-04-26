@@ -113,22 +113,6 @@ def motorInit(Ser):
 
 def actuate(mMotor, **kwargs):
     
-    #Init Motor
-    #iniMotor = motorInit(Ser1)
-    
-    #pause('Y to continue ...', ['Y'])
-    #iniMotor = Motor(Ser1)
-    #iniMotor.on()
-    iniMotor = mMotor
-    # try:
-        # pause("ini from actuate>...Y to continue","Y")
-        # iniMotor.up(steps = 800, t = .00025,log=True)
-        # time.sleep(1)
-        # iniMotor.down(steps = 800, t = .00025)
-    # except:
-        # print 'COULDNT CALIBRATE'
-    #steering.calibrateMotor(iniMotor)
-    
     while True:
         #print ['down','up'][int(gPos > 500)], str(gAccel - 500)
         #print "gPos:", str(gPos)
@@ -137,12 +121,10 @@ def actuate(mMotor, **kwargs):
         try:
             if kwargs.get('log',False):
                 print "Actuate gAccel: ", str(gAccel)
-            actuateMotor(gAccel,iniMotor)
-            #time.sleep(2)
+            actuateMotor(gAccel,mMotor)
         except:
             print 'motor-actuate-err'
-        
-        #pass
+
         
 def setAccel(line):
     
@@ -200,22 +182,27 @@ def gpioapi(pinNum, command):
 
         
         
-myserial = MySerialLock(timeout = .05)
+### MAIN -----
+if __name__ == "__main__":
 
-myserial.serPort.write(gpioapi(4,'set'))
-Joy = Joystick(myserial)
+    myserial = MySerialLock(timeout = .05)
 
-#First setup motor...
-mMotor = calibrate.motorInit(myserial)
-calibrate.calibrateMotor(mMotor)
-print 'done calibing'
+    myserial.serPort.write(gpioapi(4,'set'))
+    Joy = Joystick(myserial)
 
-t1 = threading.Thread(target=poll, args = (Joy,))  #lockme=True,
-t1.start()
+    #Calibrate Phase...
+    mMotor = calibrate.motorInit(myserial)
+    calibrate.calibrateMotor(mMotor)
+    print 'done calibing'
 
+    #Interactive Mode
+    t1 = threading.Thread(target=poll, args = (Joy,))  #lockme=True,
+    t1.start()
 
-t2 = threading.Thread(target=actuate, args = (mMotor,))
-t2.start()
+    t2 = threading.Thread(target=actuate, args = (mMotor,))
+    t2.start()
+    
+    #t3 = threading.ThreaD(target=shell,args = (mMotor,Joy))
 
 
 
