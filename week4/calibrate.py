@@ -14,6 +14,9 @@ def pause(dispTxt, breaker):
         inp = raw_input(dispTxt)
         if any(keywords in inp for keywords in breaker):
             return inp
+        else:
+            print 'cmd not recognized'
+            
     
 def parseQW(cmd):
     """cmd of form <q> <N> or <qqq...q> """
@@ -21,6 +24,13 @@ def parseQW(cmd):
     if len(words) > 1:
         return int(words[1])
     return max( [ words[0].count(s) for s in ["q","w"]] )
+    
+def parseA(cmd):
+    """cmd of form <a> <decimal> e.g. a .00025 """
+    words = cmd.split(' ')
+    if len(words) > 1:
+        return str(words[1])
+    return "0"
     
 
 ###Calibration ManualRun #############################    
@@ -43,7 +53,7 @@ def calibrateMotor(Motor1):
     #Now loop untill configured
     while(True):
         
-        ret = pause('q to release, w to wind ...', ['q','w','exit', 'reversedir','setwindmax','p','o', 'outputlog'])
+        ret = pause('q to release, w to wind ...', ['q','w','exit', 'reversedir','setwindmax','p','o', 'outputlog', 'a'])
 
         
         #respond to input ---------------
@@ -66,6 +76,16 @@ def calibrateMotor(Motor1):
         if ret == 'setwindmax':
             Motor1.setWindMax()
             print 'wound, stepind: ', str(Motor1.stepInd)
+        
+        if ret[0] == 'a':
+            print 'a cmd'
+            strVal = parseA(ret)
+            if strVal != "0":
+                #method below will convert to float or fail
+                Motor1.adjSpeed(strVal)
+                print 'Motor1 t and t1=', str(strVal)
+            else:
+                print 'failed to parse the a command'
         
         if ret == 'exit':
             return 'im out'

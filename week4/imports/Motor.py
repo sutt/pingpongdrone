@@ -152,6 +152,18 @@ class Motor:
         self.serPort.write(gpioapi(self.stepPin, 'clear' ))
         return 1
         
+    def adjSpeed(self,input,**kwargs):
+        try:
+            myt = float(input)
+        except:
+            print 'adjSpeed error: input was not a float'
+            return 0
+        if (myt > 0) & (myt < 1.0) or kwargs.get('overSpeed',false):
+            self.t = myt
+            return 1
+        print 'the value of input' , str(input), ' is outside the allowable bounds'
+        return 0
+    
     def setWindDir(self,dir):
         self.windDir = dir  # 0 or 1
         return dir
@@ -284,6 +296,19 @@ class Motor2:
         self.serPort.writeSer(gpioapi(self.dirPin, 'clear' ))
         self.serPort.writeSer(gpioapi(self.stepPin, 'clear' ))
         return 1
+        
+    def adjSpeed(self,input,**kwargs):
+        try:
+            myt = float(input)
+        except:
+            print 'adjSpeed error: input was not a float'
+            return 0
+        if (myt > 0) & (myt < 1.0) or kwargs.get('overSpeed',false):
+            self.t = myt
+            self.t1 = myt
+            return 1
+        print 'the value of input' , str(input), ' is outside the allowable bounds'
+        return 0
         
     def setWindDir(self,dir):
         self.windDir = dir  # 0 or 1
