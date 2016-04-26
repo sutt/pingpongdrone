@@ -119,6 +119,9 @@ def actuateMotor(accel, mMotor):
             
         elif accel == 0:
             time.sleep(actuateInterval)
+            
+        print str(mMotor.stepInd)
+        
     except:
         print 'actuateMotor err'
     return time.time() - entryTime

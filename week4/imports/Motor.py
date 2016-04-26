@@ -346,7 +346,9 @@ class Motor2:
         if kwargs.get('log',False):
             self.logstep(steps = steps, secs = _t)
         elif kwargs.get('timeout', 0) > 0:
-            self.step(steps = steps, secs = _t, timeout = kwargs.get('timeout', 0))
+            ret = self.step(steps = steps, secs = _t, timeout = kwargs.get('timeout', 0))
+            if ret < steps:
+                steps = ret
         else:
             self.step(steps = steps, secs = _t)
         self.stepInd = steps + self.stepInd
@@ -356,7 +358,7 @@ class Motor2:
         steps = kwargs.get('steps',1)
         if steps > self.stepInd and not(kwargs.get('overrideMaxDown',False)):
             steps = self.stepInd
-            print ' only ', str(self.stepInd)
+            print ' only down', str(self.stepInd)
         
         self.setDir(self.windDir)
         
@@ -365,7 +367,9 @@ class Motor2:
         if kwargs.get('log',False):
             self.logstep(steps = steps, secs = _t)
         elif kwargs.get('timeout', 0) > 0:
-            self.step(steps = steps, secs = _t, timeout = kwargs.get('timeout', 0))
+            ret = self.step(steps = steps, secs = _t, timeout = kwargs.get('timeout', 0))
+            if ret < steps:
+                steps = ret
         else:
             self.step(steps = steps, secs = _t)
 
