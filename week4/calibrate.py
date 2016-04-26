@@ -64,7 +64,7 @@ def calibrateMotor(Motor1):
         
         if ret[0] == 'w':
             retsteps = parseQW(ret)
-            Motor1.down(steps = retsteps, log=True)
+            Motor1.down(steps = retsteps, log=False)
             print str(retsteps)
             
         if ret == 'reversedir':

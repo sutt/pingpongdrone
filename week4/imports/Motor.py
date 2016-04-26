@@ -378,7 +378,7 @@ class Motor2:
             try:
                 if timeout > 0:
                     if time.time() > timeout:
-                        print 'cutoff s=', str(s)
+                        #print 'cutoff s=', str(s)
                         return s
                 
                 self.serPort.writeSer(gpioapi(self.stepPin,'clear'))
