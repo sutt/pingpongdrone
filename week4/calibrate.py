@@ -35,6 +35,7 @@ def motorInit(Ser):
     """ this sets up motor from class """
     pause('Y to continue ...', ['Y'])
     MyMotor = Motor(Ser)
+    MyMotor.on()
     return MyMotor
     
 def calibrateMotor(Motor1):
