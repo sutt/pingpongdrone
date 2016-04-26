@@ -345,6 +345,8 @@ class Motor2:
         
         if kwargs.get('log',False):
             self.logstep(steps = steps, secs = _t)
+        elif kwargs.get('timeout', 0) > 0:
+            self.step(steps = steps, secs = _t, timeout = kwargs.get('timeout', 0))
         else:
             self.step(steps = steps, secs = _t)
         self.stepInd = steps + self.stepInd
@@ -368,9 +370,15 @@ class Motor2:
         self.stepInd = self.stepInd - steps
         return 1
         
-    def step(self,steps,secs):
+    def step(self,steps,secs,**kwargs):
+        timeout = kwargs.get('timeout',0)
         for s in range(steps):
             try:
+                if timeout > 0:
+                    if time.time() > timeout:
+                        print 'cutoff s=', str(s)
+                        return s
+                
                 self.serPort.writeSer(gpioapi(self.stepPin,'clear'))
                 time.sleep(secs)
                 self.serPort.writeSer(gpioapi(self.stepPin,'set'))

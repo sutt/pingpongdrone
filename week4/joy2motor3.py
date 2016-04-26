@@ -70,27 +70,40 @@ def actuateMotor(accel, mMotor):
     
     #This is half the period time "on, off, on"
     # 0-500 -> 1-> .00025
+    #ahh here ^
+    if abs(accel) > 400:
+        accelPeriod = .0001
+    elif abs(accel) > 200:
+        accelPeriod = .001
+    elif abs(accel) > 10:
+        accelPeriod = .005
+        
     #accelPeriod = 1.0 / float(1+(8*accel))  
     #intervalSteps = int(actuateInterval / accelPeriod)
     #modInterval =  actuateInterval % accelPeriod 
     
     #intervalSteps = 40
-    accelPeriod = .005
-    epsilon = float((.001 * 8 * 4) + .01)  #polling locks serial
-    epsilon = 0.1
-    intervalSteps = int(float(actuateInterval - epsilon) / float(accelPeriod*2))
-    #intervalSteps = 20
+    #accelPeriod = .005
+    #epsilon = float((.001 * 8 * 4) + .01)  #polling locks serial
+    #epsilon = 0.1
+    #intervalSteps = int(float(actuateInterval - epsilon) / float(accelPeriod*2))
+    intervalSteps = 200
     #print 'intervalSteps', str(intervalSteps)
+    
+    mytimeout = entryTime + actuateInterval - .001
+    #print mytimeout - iniTime
     
     try:
         if accel > 0:
-            mMotor.up(steps = intervalSteps, t = accelPeriod)
-            modInterval = actuateInterval - (time.time() - entryTime) 
-            if modInterval < 0:
-                print 'LAG up', str(modInterval)
-            else:
-                print 'ahead up', str(modInterval)
-                time.sleep(modInterval)
+            mMotor.up(steps = intervalSteps, t = accelPeriod, timeout = mytimeout)
+            
+            if False:
+                modInterval = actuateInterval - (time.time() - entryTime) 
+                if modInterval < 0:
+                    print 'LAG up', str(modInterval)
+                else:
+                    print 'ahead up', str(modInterval)
+                    time.sleep(modInterval)
                 
         elif accel < 0:
             #print 'downing'
@@ -139,7 +152,8 @@ def actuate(mMotor, **kwargs):
             #print "Actuate: ", str(time.time() - iniTime)
             
         except:
-            print 'motor-actuate-err'
+            #print 'motor-actuate-err'
+            pass
 
         
 def setAccel(line):
