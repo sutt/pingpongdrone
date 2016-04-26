@@ -107,14 +107,15 @@ def actuateMotor(accel, mMotor):
                 
         elif accel < 0:
             #print 'downing'
-            mMotor.down(steps = intervalSteps, t = accelPeriod, \
-            overrideMaxDown=False)
-            modInterval = actuateInterval - (time.time() - entryTime)
-            if modInterval < 0:
-                print 'LAG down', str(modInterval)
-            else:
-                print 'ahead down', str(modInterval)
-                time.sleep(modInterval)
+            mMotor.down(steps = intervalSteps, t = accelPeriod, timeout = mytimeout, overrideMaxDown=False)
+            
+            if False:
+                modInterval = actuateInterval - (time.time() - entryTime)
+                if modInterval < 0:
+                    print 'LAG down', str(modInterval)
+                else:
+                    print 'ahead down', str(modInterval)
+                    time.sleep(modInterval)
             
         elif accel == 0:
             time.sleep(actuateInterval)
@@ -166,7 +167,9 @@ def setAccel(line):
         line = line[12:-3]
         iPos = int(line)
     except:
-        iPos = gPos
+        #iPos = gPos    #smoother long runs, but follow thru
+        iPos = 500    #jerky but no follow-thru
+        print 'MISSED READ'
     
     gPos = iPos
     

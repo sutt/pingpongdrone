@@ -364,6 +364,8 @@ class Motor2:
         
         if kwargs.get('log',False):
             self.logstep(steps = steps, secs = _t)
+        elif kwargs.get('timeout', 0) > 0:
+            self.step(steps = steps, secs = _t, timeout = kwargs.get('timeout', 0))
         else:
             self.step(steps = steps, secs = _t)
 
