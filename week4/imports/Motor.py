@@ -13,9 +13,21 @@ context = zmq.Context()
 print("Connecting to hello world server...")
 socket = context.socket(zmq.REQ)
 socket.connect("tcp://localhost:5555")
-def sendMesg(msg):
-    sMsg  = "motor: ", str(msg)
-    socket.send(sMsg)
+def sendMsg(msg):
+    sMsg  = "motor: "
+    sMsg +=    str(msg)
+    #sMsg = "yoMotor"
+    try:
+        socket.send(sMsg)
+    except:
+        #print '___motor couldnt send msg', str(sMSg)
+        pass
+    #message = socket.recv()
+    try:
+        message = socket.recv()
+    except:
+        print '__motro couldnt receive'
+    
     return 1
 
 class MySerialLock:
@@ -369,7 +381,11 @@ class Motor2:
         steps = kwargs.get('steps',1)
         if steps > self.stepInd and not(kwargs.get('overrideMaxDown',False)):
             steps = self.stepInd
-            print ' only down', str(self.stepInd)
+            
+            if kwargs.get('zmq',True):
+                sendMsg(' only down' + str(self.stepInd))
+            else:
+                print ' only down', str(self.stepInd)
         
         self.setDir(self.windDir)
         

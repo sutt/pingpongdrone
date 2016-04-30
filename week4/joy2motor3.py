@@ -9,7 +9,8 @@ import calibrate  #.Shell as Shell
 from imports.Motor import Motor2 as Motor
 from imports.Motor import MySerial as MySerial    
 from imports.Motor import MySerialLock as MySerialLock
-    
+import traceback
+
 joy = 500
 poll_delay = .1 #.05
 actuate_delay = .2 #.05
@@ -27,9 +28,19 @@ context = zmq.Context()
 print("Connecting to hello world server...")
 socket = context.socket(zmq.REQ)
 socket.connect("tcp://localhost:5555")
-def sendMesg(msg):
-    sMsg  = "main: ", str(msg)
-    socket.send(sMsg)
+def sendMsg(msg):
+    sMsg  = "main: "
+    sMsg +=    str(msg)
+    #sMsg = "yoMotor"
+    try:
+        socket.send(sMsg)
+    except:
+        print 'couldnt sendMsg: ' , str(sMsg)
+        print(traceback.print_exc())
+    try:
+        message = socket.recv()
+    except:
+        print 'main couldnt receive'
     return 1
 
 #class Joystick(threading.Thread):
@@ -73,7 +84,7 @@ class Joystick:
     def hello(self):
         print 'world'
 
-def actuateMotor(accel, mMotor):
+def actuateMotor(accel, mMotor, **kwargs):
     
     entryTime = time.time()
     
@@ -133,6 +144,7 @@ def actuateMotor(accel, mMotor):
             
         if kwargs.get('zmq',True):
             sendMsg(mMotor.stepInd)
+            pass
         else:
             print str(mMotor.stepInd)
         
@@ -174,7 +186,7 @@ def actuate(mMotor, **kwargs):
             pass
 
         
-def setAccel(line):
+def setAccel(line, **kwargs):
     
     """if poll returns an unreadable line, return the 
     accel of previuos succesful poll"""
@@ -189,6 +201,7 @@ def setAccel(line):
         
         if kwargs.get('zmq',True):
             sendMsg('MISSED READ')
+            #pass
         else:
             print 'MISSED READ'
         
