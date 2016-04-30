@@ -6,6 +6,17 @@ import threading
     
 def gpioapi(pinNum, command):
         return "gpio " + str(command) + " " + str(pinNum) +  "\r"
+        
+#logging client
+import zmq
+context = zmq.Context()
+print("Connecting to hello world server...")
+socket = context.socket(zmq.REQ)
+socket.connect("tcp://localhost:5555")
+def sendMesg(msg):
+    sMsg  = "motor: ", str(msg)
+    socket.send(sMsg)
+    return 1
 
 class MySerialLock:
     

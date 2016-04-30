@@ -21,6 +21,17 @@ pollHz = 4
 gAccel = 0
 gPos = 500
 
+#logging client
+import zmq
+context = zmq.Context()
+print("Connecting to hello world server...")
+socket = context.socket(zmq.REQ)
+socket.connect("tcp://localhost:5555")
+def sendMesg(msg):
+    sMsg  = "main: ", str(msg)
+    socket.send(sMsg)
+    return 1
+
 #class Joystick(threading.Thread):
 class Joystick:
     def __init__(self,serPortHandle,**kwargs):
@@ -120,7 +131,10 @@ def actuateMotor(accel, mMotor):
         elif accel == 0:
             time.sleep(actuateInterval)
             
-        print str(mMotor.stepInd)
+        if kwargs.get('zmq',True):
+            sendMsg(mMotor.stepInd)
+        else:
+            print str(mMotor.stepInd)
         
     except:
         print 'actuateMotor err'
@@ -172,7 +186,12 @@ def setAccel(line):
     except:
         #iPos = gPos    #smoother long runs, but follow thru
         iPos = 500    #jerky but no follow-thru
-        print 'MISSED READ'
+        
+        if kwargs.get('zmq',True):
+            sendMsg('MISSED READ')
+        else:
+            print 'MISSED READ'
+        
     
     gPos = iPos
     
@@ -236,6 +255,8 @@ if __name__ == "__main__":
 
     
     #Interactive Mode
+    import os, sys
+    os.system("start python hwserver.py")
     
     t1 = threading.Thread(target=poll, args = (Joy,))  #lockme=True,
     t1.start()
