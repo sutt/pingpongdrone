@@ -230,17 +230,44 @@ if __name__ == "__main__":
 
     #Calibrate Phase...
     mMotor = calibrate.motorInit(myserial)
+    mMotor.setWindDir(1)
     calibrate.calibrateMotor(mMotor)
     print 'done calibing'
-
+    
+    #closedown
+    def closedown(mMotor):
+        mMotor.off()
+        print 'running closedown'
+        sys.exit()
+        
+        
     #Interactive Mode
+    
     t1 = threading.Thread(target=poll, args = (Joy,))  #lockme=True,
     t1.start()
 
     t2 = threading.Thread(target=actuate, args = (mMotor,))
     t2.start()
     
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        closedown(mMotor)
+        #closedown()
+    finally:
+        print 'finally'
+        
     #t3 = threading.ThreaD(target=shell,args = (mMotor,Joy))
+    #import sys
+    #import signal
+    #while True:
+    #signal.signal(signal.SIGINT,closedown)
+    #signal.pause()  
+    #import atexit
+    #atexit.register(closedown,mMotor)
+    
+    print 'end of main'
 
 
 
