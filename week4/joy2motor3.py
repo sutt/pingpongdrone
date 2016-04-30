@@ -24,10 +24,16 @@ gPos = 500
 
 #logging client
 import zmq
+
+#context = zmq.Context()
+#print("Connecting to hello world server...")
+#socket = context.socket(zmq.REQ)
+#socket.connect("tcp://localhost:5555")
+port  = 5555
 context = zmq.Context()
-print("Connecting to hello world server...")
-socket = context.socket(zmq.REQ)
-socket.connect("tcp://localhost:5555")
+socket = context.socket(zmq.PUB)
+socket.bind("tcp://*:%s" % port)
+
 def sendMsg(msg):
     sMsg  = "main: "
     sMsg +=    str(msg)
@@ -37,10 +43,10 @@ def sendMsg(msg):
     except:
         print 'couldnt sendMsg: ' , str(sMsg)
         print(traceback.print_exc())
-    try:
-        message = socket.recv()
-    except:
-        print 'main couldnt receive'
+    # try:
+        # message = socket.recv()
+    # except:
+        # print 'main couldnt receive'
     return 1
 
 #class Joystick(threading.Thread):
@@ -255,8 +261,10 @@ def gpioapi(pinNum, command):
 ### MAIN -----
 if __name__ == "__main__":
 
+    import os, sys
+    os.system("start python sub.py")
+    
     myserial = MySerialLock(timeout = .05)
-
     myserial.serPort.write(gpioapi(4,'set'))
     Joy = Joystick(myserial)
 
@@ -268,9 +276,6 @@ if __name__ == "__main__":
 
     
     #Interactive Mode
-    import os, sys
-    os.system("start python hwserver.py")
-    
     t1 = threading.Thread(target=poll, args = (Joy,))  #lockme=True,
     t1.start()
 

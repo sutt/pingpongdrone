@@ -9,10 +9,16 @@ def gpioapi(pinNum, command):
         
 #logging client
 import zmq
+#context = zmq.Context()
+#print("Connecting to hello world server...")
+#socket = context.socket(zmq.REQ)
+#socket.connect("tcp://localhost:5555")
+
+port  = 5556
 context = zmq.Context()
-print("Connecting to hello world server...")
-socket = context.socket(zmq.REQ)
-socket.connect("tcp://localhost:5555")
+socket = context.socket(zmq.PUB)
+socket.bind("tcp://*:%s" % port)
+
 def sendMsg(msg):
     sMsg  = "motor: "
     sMsg +=    str(msg)
@@ -23,10 +29,10 @@ def sendMsg(msg):
         #print '___motor couldnt send msg', str(sMSg)
         pass
     #message = socket.recv()
-    try:
-        message = socket.recv()
-    except:
-        print '__motro couldnt receive'
+    # try:
+        # message = socket.recv()
+    # except:
+        # print '__motro couldnt receive'
     
     return 1
 
