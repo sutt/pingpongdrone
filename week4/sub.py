@@ -19,9 +19,9 @@ socket.setsockopt(zmq.SUBSCRIBE,"")
 print 'server setup'
 
 while True:
-    print 'in here'
+    #print 'in here'
     string = socket.recv()
-    print 'not blocked out'
+    #print 'not blocked out'
     print string
     
 print 'done'

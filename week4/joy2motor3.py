@@ -164,6 +164,18 @@ def pause(dispTxt, breaker):
         inp = raw_input(dispTxt)
         if any(keywords in inp for keywords in breaker):
             return inp
+
+def pause2(dispTxt, breaker):
+    try:
+        while(True):
+            inp = raw_input(dispTxt)
+            if any(keywords in inp for keywords in breaker):
+                return inp            
+    except KeyboardInterrupt:
+        print 'except pause2'
+        closedown(mMotor)
+    finally:
+        print 'return from pause2 finally'
     
 def motorInit(Ser):
     """ this sets up motor from class """
@@ -282,8 +294,6 @@ if __name__ == "__main__":
     t2 = threading.Thread(target=actuate, args = (mMotor,))
     t2.start()
     
-    #t3 = threading.ThreaD(target=shell,args = (mMotor,Joy))
-    
     #closedown
     def closedown(mMotor):
         mMotor.off()
@@ -292,8 +302,12 @@ if __name__ == "__main__":
 
     try:
         while True:
-            pass
+            
+            pause2('start shellin ...', ['s'])
+            print 'shelly'
+    
     except KeyboardInterrupt:
+        print 'except'
         closedown(mMotor)
         
     finally:
