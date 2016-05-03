@@ -380,7 +380,7 @@ class Motor2:
                 steps = ret
         else:
             self.step(steps = steps, secs = _t)
-        self.stepInd = steps + self.stepInd
+        self.stepInd = self.stepInd + (steps * [-1,1][self.windDir])
         return 1
         
     def down(self, **kwargs):
@@ -406,7 +406,7 @@ class Motor2:
         else:
             self.step(steps = steps, secs = _t)
 
-        self.stepInd = self.stepInd - steps
+        self.stepInd = self.stepInd + (steps * [1,-1][self.windDir])
         return 1
         
     def step(self,steps,secs,**kwargs):

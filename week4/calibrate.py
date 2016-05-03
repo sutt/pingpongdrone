@@ -111,6 +111,21 @@ def calibrateMotor(Motor1):
         
     return 'never exit this way' #------------------------------
 
+def calibrateMotor2(Motor1):
+        
+    #Now loop untill configured
+    while(True):
+        
+        ret = pause('q to release, w to wind ...', ['q','w','exit', 'reversedir','setwindmax','p','o', 'outputlog', 'a'])
+
+        
+        #respond to input ---------------
+        if ret[0] == 'up':
+            retsteps = parseQW(ret)
+            Motor1.up(steps = retsteps, log=False)
+            print str(retsteps)
+    
+    
 if __name__=="__main__":    
     #START
     Ser1 = MySerial()

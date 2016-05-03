@@ -303,8 +303,20 @@ if __name__ == "__main__":
     try:
         while True:
             
-            pause2('start shellin ...', ['s'])
-            print 'shelly'
+            ret = pause2('up, down ...', ['up','down','reversedir'])
+        
+            #respond to input ---------------
+            if ret == 'up':
+                mMotor.up(steps = 20, log=False)
+                
+            if ret == 'down':
+                mMotor.down(steps = 20, log=False)
+                
+            if ret == 'down':
+                mMotor.setWindDir
+                
+            if ret == 'reversedir':
+                mMotor.windDir = -1*(mMotor.windDir - 1)
     
     except KeyboardInterrupt:
         print 'except'
