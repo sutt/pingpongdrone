@@ -49,6 +49,7 @@ def sendMsg(msg):
         # print 'main couldnt receive'
     return 1
 
+    
 #class Joystick(threading.Thread):
 class Joystick:
     def __init__(self,serPortHandle,**kwargs):
@@ -173,7 +174,8 @@ def pause2(dispTxt, breaker):
                 return inp            
     except KeyboardInterrupt:
         print 'except pause2'
-        closedown(mMotor)
+        #if kwargs.get('closedown',False):
+        #    closedown(kwargs.get('closedown',Nothing))   #the mMotor ref
     finally:
         print 'return from pause2 finally'
     
@@ -268,13 +270,18 @@ def poll(JoyObj,**kwargs):
 def gpioapi(pinNum, command):
         return "gpio " + str(command) + " " + str(pinNum) +  "\r"
 
-        
+def parseQW(cmd):
+    """cmd of form <q> <N> or <qqq...q> """
+    words = cmd.split(' ')
+    if len(words) > 1:
+        return int(words[1])
+    return max( [ words[0].count(s) for s in ["q","w"]] )
         
 ### MAIN -----
 if __name__ == "__main__":
 
     import os, sys
-    os.system("start python sub.py")
+    #os.system("start python sub.py")
     
     myserial = MySerialLock(timeout = .05)
     myserial.serPort.write(gpioapi(4,'set'))
@@ -303,7 +310,7 @@ if __name__ == "__main__":
     try:
         while True:
             
-            ret = pause2('up, down ...', ['up','down','reversedir'])
+            ret = pause2('up, down ...', ['w','q','up','down','reversedir'])
         
             #respond to input ---------------
             if ret == 'up':
@@ -312,8 +319,15 @@ if __name__ == "__main__":
             if ret == 'down':
                 mMotor.down(steps = 20, log=False)
                 
-            if ret == 'down':
-                mMotor.setWindDir
+            if ret[0] == 'q':
+                retsteps = parseQW(ret)
+                mMotor.up(steps = retsteps, log=False)
+                print str(retsteps)
+            
+            if ret[0] == 'w':
+                retsteps = parseQW(ret)
+                mMotor.down(steps = retsteps, log=False)
+                print str(retsteps)
                 
             if ret == 'reversedir':
                 mMotor.windDir = -1*(mMotor.windDir - 1)
