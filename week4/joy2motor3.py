@@ -281,9 +281,9 @@ def parseQW(cmd):
 if __name__ == "__main__":
 
     import os, sys
-    #os.system("start python sub.py")
+    os.system("start python sub.py")
     
-    myserial = MySerialLock(timeout = .05)
+    myserial = MySerialLock(timeout = .02)
     myserial.serPort.write(gpioapi(4,'set'))
     Joy = Joystick(myserial)
 
