@@ -281,7 +281,7 @@ def parseQW(cmd):
 if __name__ == "__main__":
 
     import os, sys
-    os.system("start python sub.py")
+    #os.system("start python sub.py")
     
     myserial = MySerialLock(timeout = .02)
     myserial.serPort.write(gpioapi(4,'set'))
@@ -303,9 +303,9 @@ if __name__ == "__main__":
     
     #closedown
     def closedown(mMotor):
-        mMotor.off()
         print 'running closedown'
-        sys.exit()
+        mMotor.off()
+        #sys.exit()
 
     try:
         while True:
@@ -335,10 +335,11 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print 'except'
         closedown(mMotor)
+        time.sleep(.1)
         
     finally:
         print 'finally'
-        
+        #closedown(mMotor)
     
     #import sys
     #import signal
