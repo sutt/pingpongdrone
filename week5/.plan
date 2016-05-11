@@ -6,3 +6,16 @@
     shell with joy active
     protocol to arm servos; up & down
     FLY
+    
+    #motor.off onclose
+    #log to separate window
+    #why is only0 down not going off?
+    #shell with joy
+    #pass shell settings to joy
+    #fix the stepInd bug
+    #fix onclose bug
+    #w worked but q didnt
+    
+    #will up and down cmds respect maxdown?
+    
+    

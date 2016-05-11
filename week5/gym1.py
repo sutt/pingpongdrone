@@ -29,6 +29,7 @@ def strategize(obs,strat,**kwargs):
         action = env.action_space.sample()
                     
     elif strat == 2:
+        t= kwargs.get('t',None)
         action = 1 if (t % 2) == 0 else 0
     
     elif strat == 3:
@@ -39,8 +40,8 @@ def strategize(obs,strat,**kwargs):
             
     elif strat == 4:
     
-        angle1 = env.state[2]
-        accel1 = env.state[1]
+        angle1 = obs[2]
+        accel1 = obs[1]
     
         if angle1 > 0:
             if accel1 > 1:
@@ -118,7 +119,7 @@ def gameStrat(**kwargs):
 
         #play
         obs = env.state
-        action = strategize(obs,strat,env= env)
+        action = strategize(obs,strat,env= env, t=ind)
         #logit(ind = ind, obs = obs, action = action)           
         
         #step
@@ -136,15 +137,24 @@ def gameStrat(**kwargs):
             
             perfstrat.append(ind)
             
+            if kwargs.get('continuesteps',False):
+                if ind > int(kwargs.get('continuesteps',100)):
+                    continue
+            
             if kwargs.get('logendgame',False):
                 logit(logendgame = {'ind':ind,'state':env.state})
             if kwargs.get('justone',False):
                 return perfstrat
-            if kwargs.get('keepgoing',False):
-                if ind > int(kwargs.get('keepgoing',100)):
+            
+            if kwargs.get('totalgames',False):
+                games = len(perfstrat)
+                if games > int(kwargs.get('totalgames',1)):
+                    print 'returning'
                     return perfstrat
-            else:
-                env.reset()
+            
+            
+            env.reset()
+            ind = 0
             
         if ind > int(kwargs.get('keepgoing',999999999999)):
             return perfstrat
@@ -155,7 +165,7 @@ def gameStrat(**kwargs):
 def evalGames(perf):        
     print perf
     avgind = float(sum(perf)) / float(len(perf))
-        
+    return avgind
 
 import sys
 
@@ -171,4 +181,9 @@ if __name__ == "__main__":
     eval = evalGames(perf)
     print eval
     
+    for s in [1,2]:
+        perf = gameStrat(strat = s, totalgames=10)
+        eval = evalGames(perf)
+        print eval
+        
     
