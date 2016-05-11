@@ -1,5 +1,5 @@
 import gym,time, os, zmq,random
-
+from learning import Algo
 
 def createEnv(**kwargs):
     env = gym.make('CartPole-v0')
@@ -53,51 +53,31 @@ def strategize(obs,strat,**kwargs):
                 action  = 1
             else:
                 action = 0
-    
-        angle0 = angle1
-        accel0 = accel1
+
         
     elif strat == 5:
-    #else:
     
-        xx = [0,1,2,3,4,10,20,30,100][strat]
-        angle1 = env.state[2]
-        accel1 = env.state[1]
-        pos1 = env.state[0]
+        algo = kwargs.get('algo',None)
         
-        if angle1 > 0:
-            if accel1 > 1:
-                action = 0
-            else:
-                action = 1
-        else:
-            if accel1 < -1:
-                action  = 1
-            else:
-                action = 0
-        
-        if (abs(pos1) > 1) & (abs(accel1) > .6):
-            bench = abs(pos1) - 1
-            bench = int(bench * 10)
-            
-            #if random.randint(1,xx) < bench :
-            if random.randint(1,10) < 1 :
-                action = (action - 1)*(-1)
+        action = algo.makeDec(obs)
     
     return action
     
 def logit(**kwargs):
     if kwargs.get('stratstart',False):
         print 'STRAT: ', str(kwargs.get('stratstart','None')), '------'
+        return 1
         
     if kwargs.get('logloss',False):
         print 'You Lose on: ', str(kwargs.get('logloss','None'))
+        return 1
         
-    if kwargs.get('logstep',False):
+    if kwargs.get('logstep',False) or gLogstep:
         state = kwargs.get('logstep',None)['state']
         state = map(lambda x: round(x,2), state)
         print state
-    
+        return 1
+        
     return 1
     
 def gameStrat(**kwargs):
@@ -107,6 +87,7 @@ def gameStrat(**kwargs):
     strat = int(kwargs.get('strat',1))
     env = createEnv()
     logit(stratstart=strat)
+    algo = kwargs.get('Algo',None)
     
     t0 = time.time()
     ind = 0
@@ -119,8 +100,9 @@ def gameStrat(**kwargs):
 
         #play
         obs = env.state
-        action = strategize(obs,strat,env= env, t=ind)
-        #logit(ind = ind, obs = obs, action = action)           
+        
+        action = strategize(obs,strat,env= env, t=ind, algo=algo)
+        logit(logstep = {'state':obs,'action':action})           
         
         #step
         quad = env.step(action)
@@ -177,13 +159,20 @@ import sys
 
 if __name__ == "__main__":
     
-    perf = gameStrat(strat = 1, justone=True)
-    eval = evalGames(perf)
-    print eval
-    
-    for s in [1,2]:
-        perf = gameStrat(strat = s, totalgames=10)
+    if len(sys.argv) > 1:
+        
+        algo = Algo()
+        algo.update(delta_accel = 1,delta_angle = 1)
+        
+        gLogstep = True
+        perf = gameStrat(strat = 5, totalgames=3,Algo=algo)
         eval = evalGames(perf)
         print eval
+        
+    else:
+        for s in [1,2,3,4]:
+            perf = gameStrat(strat = s, totalgames=3)
+            eval = evalGames(perf)
+            print eval
         
     
