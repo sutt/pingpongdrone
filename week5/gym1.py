@@ -102,7 +102,7 @@ def gameStrat(**kwargs):
         obs = env.state
         
         action = strategize(obs,strat,env= env, t=ind, algo=algo)
-        logit(logstep = {'state':obs,'action':action})           
+        #logit(logstep = {'state':obs,'action':action})           
         
         #step
         quad = env.step(action)
@@ -157,17 +157,36 @@ import sys
 # p.add_option('--bar', '-b')
 # options, arguments = p.parse_args()
 
+
 if __name__ == "__main__":
     
     if len(sys.argv) > 1:
         
         algo = Algo()
-        algo.update(delta_accel = 1,delta_angle = 1)
+        #algo.update(delta_accel = 1,delta_angle = 0)
+        ep = 0.1
+        var = 1
         
-        gLogstep = True
-        perf = gameStrat(strat = 5, totalgames=3,Algo=algo)
-        eval = evalGames(perf)
-        print eval
+        while True:
+        
+            
+            #run a batch of games
+            #gLogstep = True
+            evals = []
+            for dDelta in algo.gradient(var):
+                
+                algo.update(var = (2,dDelta))
+                
+                perf = gameStrat(strat = 5, totalgames=3,Algo=algo)
+                eval = evalGames(perf)
+                print eval
+                evals.append(eval)
+            
+            #update algo
+            d = algo.eval(evals, var= var)
+            print d
+            algo.update(delta_accel = d['accel'],delta_angle = d['angle'])
+            
         
     else:
         for s in [1,2,3,4]:
