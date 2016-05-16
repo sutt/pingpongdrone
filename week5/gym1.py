@@ -169,18 +169,15 @@ if __name__ == "__main__":
         
         while True:
         
-            
-            #run a batch of games
-            #gLogstep = True
-            evals = []
-            for dDelta in algo.gradient(var):
+            var = [2]  
+            for point in algo.build_gradient(vars = var):
                 
-                algo.update(var = (2,dDelta))
+                algo.updateF(point)
                 
                 perf = gameStrat(strat = 5, totalgames=3,Algo=algo)
-                eval = evalGames(perf)
-                print eval
-                evals.append(eval)
+                y = evalGames(perf)
+                
+                algo.update_ygradient(
             
             #update algo
             d = algo.eval(evals, var= var)
@@ -190,7 +187,7 @@ if __name__ == "__main__":
         
     else:
         for s in [1,2,3,4]:
-            perf = gameStrat(strat = s, totalgames=3)
+            perf = gameStrat(strat = s, totalgames=5)
             eval = evalGames(perf)
             print eval
         
