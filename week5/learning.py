@@ -80,62 +80,49 @@ class Algo():
         return delta
     
     
-    #@staticmethod
     def permute_variables(self,points,vars,**kwargs):
-        #while True:
+        """Beta(i) + delta(i,j) for all i, j in:
+                vars= [ (i1,(j1,j2,...)), (i2,(j1,j2,...)), ... ] 
+            Returns: list of points, vectors in Beta-space  """
+                
         var = vars.pop()
         v, vals = var[0],var[1]
-        points2 = points[:]
+
+        points2 = points[:] 
         
-        cur = self._obs[:]
-        x_n = len(self._obs)
-        
-        print 'in'
-        ind = 0
-        
-        for p_0 in points[:]:
-            print 'p_0', str(p_0)
+        #no origin 
+        if len(points) == 0:
+            iter_p = [self._obs]
+        else:
+            iter_p = points[:]
+            
+        for p in iter_p:
             for val in vals:
                 
-                print 'v:', str(val)
-                
-                cur = p_0[:]
-                point = [cur[i] + val if i == v else cur[i] \
-                         for i in range(x_n)]
+                point = [p[i] + val if i == v else p[i] \
+                         for i in range(len(self._obs))]
                 points2.append(point)
-                print 'P:' , str(point)
-                    
-                #ind += 1
-                #if ind > 16: 
-                    #return points2
-        print points2
         
-        if len(vars) < -1:
-            print 'ret'
-            print points2
         if len(vars) > 0:
-            print 'recurse'
-            points = self.permute_variables(points2,vars)
-            return points
-
-        #print 'end while iter'
-        print 'end func'
+            return self.permute_variables(points2,vars)
         return points2
         
     def build_gradient(self,**kwargs):
-        """self._obs + g(i) for all i in combination(vars)"""
+        """self._Beta + g(i) for all i in combination(vars)"""
         
         ep = float(kwargs.get('ep',0.1))
         vars = kwargs.get('vars',[0])
         dvars = []
         for var in vars:
-            dvars.append(var, [float(-1*ep),float(-1*ep)])
+            dvars.append((var, [float(-1*ep),float(-1*ep)]))
         
-        current = self._obs[:]
-        points = self.permute_variables([current],dvars)
+        #start with 0 or 1 point to permute
+        origin = []
+        if not(kwargs.get('no_origin',False)):
+            origin.append(self._obs)
+        
+        points = self.permute_variables(origin,dvars)
 
-        #{var_ind1 : [var
-        #return a flattened version
         return points
         
         
