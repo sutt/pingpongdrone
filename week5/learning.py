@@ -10,26 +10,26 @@ class Algo():
         if kwargs.get('Xtransform',False):
             self.X = self._obs   
         else:
-            self.X = self._obs
+            self.X = self._obs   #set X to the true size vec
         self.dimX = len(self.X)
         
         #Beta(i) for each i in X
         self.Beta = [0 for i in range(self.dimX)]
         #Final holds the current best values
         self.BetaFinal = [0 for i in range(self.dimX)]
-        
-        
+
         
         #best perf, current perf, [0,inf), higher is better 
         self._perf = 0
+
         
-        #how the deltas in 
-        self.Beta_gradient = [(i,(0)) for i in range(self.dimX)]
+        #points in Beta-Space
+        self.beta_gradient = [0 for i in range(self.dimX)]
         
-        #{x1:[v[0],v[1],...v[n]], x2:..}
+        #points in Xspace
         self.x_gradient = []  
         
-        #{x1:[y[x0],y[x1],...y[xn]], x2:..}
+        #for each el in betagradient, a correspoing  y(beta(i)) 
         self.y_gradient = []
         
         
@@ -40,14 +40,11 @@ class Algo():
     def updateBetaFinal(self,point,**kwargs):
         self.BetaFinal = point
         
-    def update_ygradient(self,xgrad_point, y_eval,**kwargs):
+    def update_ygradient(self, y_eval,**kwargs):
+        self.y_gradient.append(y_eval)
         
-        #self.y_gradient = 1
-        
-        return 1
-    
-    def reset_ygradient(self,**kwargs):
-        self.y_gradient = {}
+    def reset_ygradient(self):
+        self.y_gradient = []
     
     def makeDec(self, obs,**kwargs):
         angle1 = obs[2]
@@ -67,8 +64,27 @@ class Algo():
                 
         return action
         
-    def f(self,**kwargs):
-        return 1
+    def f(self,obs,**kwargs):
+        angle1 = obs[2]
+        accel1 = obs[1]
+        pos1 = obs[0]
+        
+        _angle = self.Beta[2]
+        _accel = self.Beta[1]
+        
+        if angle1 > _angle:
+            if accel1 > _accel:
+                action = 0
+            else:
+                action = 1
+        else:
+            if accel1 < -_accel:
+                action  = 1
+            else:
+                action = 0
+                
+        
+        return action
     
     
     def evalGames(self,perf):        
@@ -81,7 +97,7 @@ class Algo():
         l = kwargs.get('l', 1.0)   #learnign rate
         
         yg = self.y_gradient
-        xg = self.x_gradient
+        Bg = self.beta_gradient
         
         #Max Perf
         indYmax = yg.index(max(yg))
@@ -89,9 +105,9 @@ class Algo():
         #Based on Change, find new Betas
         xn = self.dimX
         B0 = self.BetaFinal
-        B1 = xg[indYmax]
+        B1 = Bg[indYmax]
         
-        Bnew = [ float( B0[i] + float((B1[i] - B0[i])*l) \
+        Bnew = [ float( B0[i] + float((B1[i] - B0[i])*l) ) \
                   for i in range(xn)]
 
         return Bnew
@@ -133,14 +149,15 @@ class Algo():
         for var in vars:
             dvars.append((var, [float(-1*ep),float(-1*ep)]))
         
-        self.Beta_gradient = dvars[:]
+        
         #start with 0 or 1 point to permute
         origin = []
         if not(kwargs.get('no_origin',False)):
             origin.append(self.BetaFinal)
         
         points = self.permute_variables(origin,dvars)
-
+        
+        self.beta_gradient = points
         return points
         
         

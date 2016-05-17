@@ -60,6 +60,12 @@ def strategize(obs,strat,**kwargs):
         algo = kwargs.get('algo',None)
         
         action = algo.makeDec(obs)
+        
+    elif strat == 6:
+    
+        algo = kwargs.get('algo',None)
+        
+        action = algo.f(obs)
     
     return action
     
@@ -163,31 +169,35 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         
         algo = Algo()
-        #algo.update(delta_accel = 1,delta_angle = 0)
-        ep = 0.1
-        var = 1
-        
         while True:
         
+            #need to set Beta[accel] to 1
+            #algo.updateBeta([0,1,0,0])
+            #algo.updateBetaFinal([0,1,0,0])
             var = [2]  
+            
+            algo.reset_ygradient()
             for point in algo.build_gradient(vars = var):
                 
                 algo.updateBeta(point)
                 
-                perf = gameStrat(strat = 5, totalgames=3,Algo=algo)
+                perf = gameStrat(strat = 6, totalgames=3,Algo=algo, \
+                                renderme = False)
                 
                 y = evalGames(perf)
                 
-                algo.update_ygradient(y)
+                algo.update_ygradient(y)    
             
             #update algo
-            updateB = algo.eval(evals, var= var)
+            updateB = algo.eval()
             algo.updateBetaFinal(updateB)
             
-            #if condition met:
-                #break
+            #Exit Training Conditions
+            if y > 500:
+                break
                 
         #Print summary of loop outcome
+        print str(algo.BetaFinal)
             
 
         
