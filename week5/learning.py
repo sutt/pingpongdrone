@@ -82,12 +82,12 @@ class Algo():
     
     #@staticmethod
     def permute_variables(self,points,vars,**kwargs):
-        
+        #while True:
         var = vars.pop()
         v, vals = var[0],var[1]
         points2 = points[:]
         
-        cur = self._obs
+        cur = self._obs[:]
         x_n = len(self._obs)
         
         print 'in'
@@ -105,17 +105,22 @@ class Algo():
                 points2.append(point)
                 print 'P:' , str(point)
                     
-                ind += 1
-                if ind > 16: 
-                    return points2
-            
+                #ind += 1
+                #if ind > 16: 
+                    #return points2
+        print points2
         
-            
+        if len(vars) < -1:
+            print 'ret'
+            print points2
         if len(vars) > 0:
             print 'recurse'
-            self.permute_variables(points2,vars)
-        else:
+            points = self.permute_variables(points2,vars)
             return points
+
+        #print 'end while iter'
+        print 'end func'
+        return points2
         
     def build_gradient(self,**kwargs):
         """self._obs + g(i) for all i in combination(vars)"""
