@@ -29,13 +29,13 @@ class Algo():
             self._angle += kwargs.get('delta_angle',0)
             self._obs[2] += kwargs.get('delta_angle',0)
         
-        if kwargs.get('new_obs'),False):
+        if kwargs.get('new_obs',False):
             self._obs = new_obs
         return 1
         
     def update_ygradient(self,xgrad_point, y_eval,**kwargs):
         
-        self.y_gradient[x
+        #self.y_gradient = 1
         
         return 1
     
@@ -60,7 +60,8 @@ class Algo():
                 
         return action
         
-    def f(self,
+    def f(self,**kwargs):
+        return 1
         
     def eval(self,evals,**kwargs):
         delta = {'accel': 0,'angle' :0}
@@ -78,28 +79,41 @@ class Algo():
         
         return delta
     
-    def 
     
+    #@staticmethod
     def permute_variables(self,points,vars,**kwargs):
         
         var = vars.pop()
         v, vals = var[0],var[1]
+        points2 = points[:]
         
         cur = self._obs
         x_n = len(self._obs)
         
-        for p_0 in points:
+        print 'in'
+        ind = 0
+        
+        for p_0 in points[:]:
+            print 'p_0', str(p_0)
             for val in vals:
                 
-                cur = p_0
+                print 'v:', str(val)
+                
+                cur = p_0[:]
                 point = [cur[i] + val if i == v else cur[i] \
                          for i in range(x_n)]
-                points.append(point)
-                
-                #delta = 
+                points2.append(point)
+                print 'P:' , str(point)
+                    
+                ind += 1
+                if ind > 16: 
+                    return points2
+            
         
+            
         if len(vars) > 0:
-            self.permute_variables(self,points,vars)
+            print 'recurse'
+            self.permute_variables(points2,vars)
         else:
             return points
         

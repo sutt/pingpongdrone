@@ -101,6 +101,7 @@ def gameStrat(**kwargs):
         #play
         obs = env.state
         
+        # strategize(env,extras = {previous obs, ind, etc...})
         action = strategize(obs,strat,env= env, t=ind, algo=algo)
         #logit(logstep = {'state':obs,'action':action})           
         
@@ -181,9 +182,15 @@ if __name__ == "__main__":
             
             #update algo
             d = algo.eval(evals, var= var)
-            print d
+            
             algo.update(delta_accel = d['accel'],delta_angle = d['angle'])
             
+            #if condition met:
+                #break
+                
+        #Print summary of loop outcome
+            
+
         
     else:
         for s in [1,2,3,4]:
