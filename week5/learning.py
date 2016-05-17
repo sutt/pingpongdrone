@@ -3,35 +3,42 @@ import gym,os,sys,time, random
 class Algo():
     
     def __init__(self,**kwargs):
-        self._accel = 0
-        self._angle = 0
-        self._pos = 0
         
         self._obs = [0,0,0,0]
-        self.dimX = len(self._obs)
+        
+        #X can different from obs, e.g. Xi = abs(obs[i])
+        if kwargs.get('Xtransform',False):
+            self.X = self._obs   
+        else:
+            self.X = self._obs
+        self.dimX = len(self.X)
+        
+        #Beta(i) for each i in X
+        self.Beta = [0 for i in range(self.dimX)]
+        #Final holds the current best values
+        self.BetaFinal = [0 for i in range(self.dimX)]
+        
+        
         
         #best perf, current perf, [0,inf), higher is better 
         self._perf = 0
         
+        #how the deltas in 
+        self.Beta_gradient = [(i,(0)) for i in range(self.dimX)]
+        
         #{x1:[v[0],v[1],...v[n]], x2:..}
-        self.x_gradient = {}  
+        self.x_gradient = []  
         
         #{x1:[y[x0],y[x1],...y[xn]], x2:..}
-        self.y_gradient = {}
+        self.y_gradient = []
         
         
         
-    def updateF(self,**kwargs):
-        if kwargs.get('delta_accel',False):
-            self._accel += kwargs.get('delta_accel',0)
-            self._obs[1] += kwargs.get('delta_accel',0)
-        if kwargs.get('delta_angle',False):
-            self._angle += kwargs.get('delta_angle',0)
-            self._obs[2] += kwargs.get('delta_angle',0)
-        
-        if kwargs.get('new_obs',False):
-            self._obs = new_obs
-        return 1
+    def updateBeta(self,point,**kwargs):
+        self.Beta = point
+    
+    def updateBetaFinal(self,point,**kwargs):
+        self.BetaFinal = point
         
     def update_ygradient(self,xgrad_point, y_eval,**kwargs):
         
@@ -62,22 +69,32 @@ class Algo():
         
     def f(self,**kwargs):
         return 1
+    
+    
+    def evalGames(self,perf):        
+        avgind = float(sum(perf)) / float(len(perf))
+        return avgind
+
         
-    def eval(self,evals,**kwargs):
-        delta = {'accel': 0,'angle' :0}
+    def eval(self,**kwargs):
         
-        l = kwargs.get('l', 1)
-        ep = float(kwargs.get('ep',0.1))
+        l = kwargs.get('l', 1.0)   #learnign rate
         
-        eval_low,eval_high = evals[0],evals[1]
-        sign = -1 if eval_low > eval_high else 1
+        yg = self.y_gradient
+        xg = self.x_gradient
         
-        if kwargs.get('var',  0) == 1:
-            delta['accel'] += float(sign * l * ep)
-        if kwargs.get('var', 0) == 2:
-            delta['angle'] += float(sign * l * ep)
+        #Max Perf
+        indYmax = yg.index(max(yg))
         
-        return delta
+        #Based on Change, find new Betas
+        xn = self.dimX
+        B0 = self.BetaFinal
+        B1 = xg[indYmax]
+        
+        Bnew = [ float( B0[i] + float((B1[i] - B0[i])*l) \
+                  for i in range(xn)]
+
+        return Bnew
     
     
     def permute_variables(self,points,vars,**kwargs):
@@ -92,7 +109,7 @@ class Algo():
         
         #no origin 
         if len(points) == 0:
-            iter_p = [self._obs]
+            iter_p = [self.BetaFinal]
         else:
             iter_p = points[:]
             
@@ -116,10 +133,11 @@ class Algo():
         for var in vars:
             dvars.append((var, [float(-1*ep),float(-1*ep)]))
         
+        self.Beta_gradient = dvars[:]
         #start with 0 or 1 point to permute
         origin = []
         if not(kwargs.get('no_origin',False)):
-            origin.append(self._obs)
+            origin.append(self.BetaFinal)
         
         points = self.permute_variables(origin,dvars)
 

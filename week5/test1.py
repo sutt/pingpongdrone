@@ -19,3 +19,6 @@ print 'testlen: ',  str(len(ret))
 ret = a.build_gradient(vars = [1,2,3,4], no_origin = True)
 
 print 'testlen: ',  str(len(ret))
+
+##TODO 5/17:
+    #update x_gradient, y_gradient; Beta_gradient too?

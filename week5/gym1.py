@@ -146,7 +146,6 @@ def gameStrat(**kwargs):
             
         
 def evalGames(perf):        
-    print perf
     avgind = float(sum(perf)) / float(len(perf))
     return avgind
 
@@ -173,17 +172,17 @@ if __name__ == "__main__":
             var = [2]  
             for point in algo.build_gradient(vars = var):
                 
-                algo.updateF(point)
+                algo.updateBeta(point)
                 
                 perf = gameStrat(strat = 5, totalgames=3,Algo=algo)
+                
                 y = evalGames(perf)
                 
-                algo.update_ygradient(
+                algo.update_ygradient(y)
             
             #update algo
-            d = algo.eval(evals, var= var)
-            
-            algo.update(delta_accel = d['accel'],delta_angle = d['angle'])
+            updateB = algo.eval(evals, var= var)
+            algo.updateBetaFinal(updateB)
             
             #if condition met:
                 #break
