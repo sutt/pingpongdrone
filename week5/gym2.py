@@ -203,7 +203,7 @@ if __name__ == "__main__":
                 
                 algo.updateBeta(point)
                 
-                perf = gameStrat(strat = 6, totalgames=10,Algo=algo, \
+                perf = gameStrat(strat = 6, totalgames=100,Algo=algo, \
                                 renderme = False, env = env)
                 
                 y = evalGames(perf)
@@ -215,8 +215,8 @@ if __name__ == "__main__":
             algo.updateBetaFinal(updateB)
             
             
-            #print 'ind: ', str(ind), ' y: ', str(y)
-            #print algo.BetaFinal
+            print 'ind: ', str(ind), ' perf: ', str(algo._perf)
+            print algo.BetaFinal
             
             #Exit Training Conditions
             ind += 1

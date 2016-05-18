@@ -145,11 +145,11 @@ class Algo():
     def build_gradient(self,**kwargs):
         """self._Beta + g(i) for all i in combination(vars)"""
         
-        ep = float(kwargs.get('ep',0.1))
+        ep = float(kwargs.get('ep',0.5))
         vars = kwargs.get('vars',[0])
         dvars = []
         for var in vars:
-            dvars.append((var, [float(-1*ep),float(-1*ep)]))
+            dvars.append((var, [float(-1*ep),float(1*ep)]))
         
         
         #start with 0 or 1 point to permute
@@ -158,7 +158,7 @@ class Algo():
             origin.append(self.BetaFinal)
         
         points = self.permute_variables(origin,dvars)
-        
+        print points
         self.beta_gradient = points
         return points
         
