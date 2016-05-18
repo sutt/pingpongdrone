@@ -138,7 +138,7 @@ class Algo():
                          for i in range(len(self._obs))]
                 points2.append(point)
         
-        if len(vars) > 0:
+        if vars:
             return self.permute_variables(points2,vars)
         return points2
         
@@ -158,7 +158,7 @@ class Algo():
             origin.append(self.BetaFinal)
         
         points = self.permute_variables(origin,dvars)
-        print points
+        #print points
         self.beta_gradient = points
         return points
         
