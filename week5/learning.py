@@ -71,6 +71,8 @@ class Algo():
         
         _angle = self.Beta[2]
         _accel = self.Beta[1]
+        _pos = self.Beta[0]
+        _posB = self.Beta[3]
         
         if angle1 > _angle:
             if accel1 > _accel:
@@ -82,6 +84,12 @@ class Algo():
                 action  = 1
             else:
                 action = 0
+        
+        if pos1 >  _pos:
+            action = 1
+        if pos1 <  -_pos:
+            action = 0
+        
         #time.sleep(.5)
         #print str(round(obs[1],2)), " - " , str(round(obs[2],2))
         #print action
