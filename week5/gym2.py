@@ -82,6 +82,10 @@ def strategize(obs,strat,**kwargs):
         action = algo.f(obs)
     
     return action
+
+def roundlist(inp,**kwargs):
+    r = kwargs.get('r',0)
+    return str([round(x,r) for x in inp])
     
 def logit(**kwargs):
     if kwargs.get('stratstart',False):
@@ -92,11 +96,20 @@ def logit(**kwargs):
         print 'You Lose on: ', str(kwargs.get('logloss','None'))
         return 1
         
-    if kwargs.get('logstep',False) or gLogstep:
+    if kwargs.get('logstep',False): # or gLogstep:
         state = kwargs.get('logstep',None)['state']
         state = map(lambda x: round(x,2), state)
         print state
         return 1
+        
+    if kwargs.get('logMt',False) :
+        inp = kwargs.get('logMt',False)
+        ind, algo = inp[0], inp[1]
+        s_perf = roundlist([algo._perf])
+        s_beta = roundlist(algo.BetaFinal, r = 2)
+        
+        s_out = "ind: "+str(ind)+" "*(5 - len(str(ind)))+s_beta+"  perf: "+s_perf
+        print s_out
         
     return 1
     
@@ -206,8 +219,8 @@ if __name__ == "__main__":
                 
                 algo.updateBeta(point)
                 
-                perf = gameStrat(strat = 6, totalgames=5,Algo=algo, \
-                                renderme = True, env = env)
+                perf = gameStrat(strat = 6, totalgames=50,Algo=algo, \
+                                renderme = False, env = env)
                 
                 y = evalGames(perf)
                 
@@ -218,8 +231,7 @@ if __name__ == "__main__":
             algo.updateBetaFinal(updateB)
             
             
-            print 'ind: ', str(ind), ' perf: ', str(algo._perf)
-            print algo.BetaFinal
+            logit(logMt = (ind, algo))
             
             #Exit Training Conditions
             ind += 1
@@ -229,7 +241,7 @@ if __name__ == "__main__":
         #Print summary of loop outcome
         print str(algo.BetaFinal)
             
-
+        
         
     else:
         for s in [1,2,3,4]:
