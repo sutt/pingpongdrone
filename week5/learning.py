@@ -82,8 +82,9 @@ class Algo():
                 action  = 1
             else:
                 action = 0
-                
-        
+        #time.sleep(.5)
+        #print str(round(obs[1],2)), " - " , str(round(obs[2],2))
+        #print action
         return action
     
     
@@ -101,6 +102,7 @@ class Algo():
         
         #Max Perf
         indYmax = yg.index(max(yg))
+        self._perf = max(yg)
         
         #Based on Change, find new Betas
         xn = self.dimX

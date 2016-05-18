@@ -186,22 +186,24 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         
         algo = Algo()
+        #need to set Beta[accel] to 1
+        #algo.updateBeta([0,1,0,0])
+        #algo.updateBetaFinal([0,1,0,0])
+        
         env = createEnvNoisy()
         ind = 0
         
         while True:
         
-            #need to set Beta[accel] to 1
-            #algo.updateBeta([0,1,0,0])
-            #algo.updateBetaFinal([0,1,0,0])
-            var = [2]  
+            
+            var = [1]  
             
             algo.reset_ygradient()
             for point in algo.build_gradient(vars = var):
                 
                 algo.updateBeta(point)
                 
-                perf = gameStrat(strat = 6, totalgames=100,Algo=algo, \
+                perf = gameStrat(strat = 6, totalgames=10,Algo=algo, \
                                 renderme = False, env = env)
                 
                 y = evalGames(perf)
@@ -212,11 +214,13 @@ if __name__ == "__main__":
             updateB = algo.eval()
             algo.updateBetaFinal(updateB)
             
-            ind += 1
-            print 'ind: ', str(ind), ' y: ', str(y)
-            print algo.BetaFinal
+            
+            #print 'ind: ', str(ind), ' y: ', str(y)
+            #print algo.BetaFinal
+            
             #Exit Training Conditions
-            if y > 500:
+            ind += 1
+            if algo._perf > 200:
                 break
                 
         #Print summary of loop outcome
