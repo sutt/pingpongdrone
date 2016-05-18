@@ -189,9 +189,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         
         algo = Algo()
-        #need to set Beta[accel] to 1
-        #algo.updateBeta([0,1,0,0])
-        #algo.updateBetaFinal([0,1,0,0])
+        #cheats, init-Betas
+        algo.updateBetaFinal([0,0,0,.1])
         
         env = createEnvNoisy()
         ind = 0
@@ -199,15 +198,16 @@ if __name__ == "__main__":
         while True:
         
             
-            var = [0,1]  
+            var = [0,1,3]  
+            ep = [0.2,0.1,0.01]
             
             algo.reset_ygradient()
-            for point in algo.build_gradient(vars = var):
+            for point in algo.build_gradient(vars = var, eps = ep):
                 
                 algo.updateBeta(point)
                 
-                perf = gameStrat(strat = 6, totalgames=50,Algo=algo, \
-                                renderme = False, env = env)
+                perf = gameStrat(strat = 6, totalgames=5,Algo=algo, \
+                                renderme = True, env = env)
                 
                 y = evalGames(perf)
                 

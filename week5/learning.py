@@ -86,9 +86,9 @@ class Algo():
                 action = 0
         
         if pos1 >  _pos:
-            action = 1
+            action = action if random.uniform(0,1) > _posB else int(not(action))
         if pos1 <  -_pos:
-            action = 0
+            action = action if random.uniform(0,1) > _posB else int(not(action))
         
         #time.sleep(.5)
         #print str(round(obs[1],2)), " - " , str(round(obs[2],2))
@@ -153,12 +153,14 @@ class Algo():
     def build_gradient(self,**kwargs):
         """self._Beta + g(i) for all i in combination(vars)"""
         
-        ep = float(kwargs.get('ep',0.2))
-        vars = kwargs.get('vars',[0])
-        dvars = []
-        for var in vars:
-            dvars.append((var, [float(-1*ep),float(1*ep)]))
+        eps = kwargs.get('eps',[0.2]*self.dimX)
+        vars = kwargs.get('vars',range(self.dimX))
         
+        dvars = []
+        for i in range(len(vars)):
+            var = vars[i]
+            ep = eps[i]
+            dvars.append((var, [float(-1*ep),float(1*ep)]))
         
         #start with 0 or 1 point to permute
         origin = []
