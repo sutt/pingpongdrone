@@ -203,7 +203,7 @@ if __name__ == "__main__":
                 
                 algo.updateBeta(point)
                 
-                perf = gameStrat(strat = 6, totalgames=100,Algo=algo, \
+                perf = gameStrat(strat = 6, totalgames=30,Algo=algo, \
                                 renderme = False, env = env)
                 
                 y = evalGames(perf)
@@ -220,7 +220,7 @@ if __name__ == "__main__":
             
             #Exit Training Conditions
             ind += 1
-            if algo._perf > 200:
+            if algo._perf > 500:
                 break
                 
         #Print summary of loop outcome
