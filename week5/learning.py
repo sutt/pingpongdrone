@@ -41,7 +41,10 @@ class Algo():
         self.BetaFinal = point
         
     def update_ygradient(self, y_eval,**kwargs):
-        self.y_gradient.append(y_eval)
+        if not(y_eval):
+            self.y_gradient.append([])
+        else:
+            self.y_gradient.append(y_eval)
         
     def reset_ygradient(self):
         self.y_gradient = []
@@ -69,9 +72,9 @@ class Algo():
         accel1 = obs[1]
         pos1 = obs[0]
         
-        _angle = self.Beta[2]
-        _accel = self.Beta[1]
         _pos = self.Beta[0]
+        _accel = self.Beta[1]
+        _angle = self.Beta[2]
         _posB = self.Beta[3]
         
         if angle1 > _angle:
@@ -96,21 +99,29 @@ class Algo():
         return action
     
     
-    def evalGames(self,perf):        
-        avgind = float(sum(perf)) / float(len(perf))
-        return avgind
-
+    def evalexpectations(self,perf):        
+        if len(perf) < 1:
+            return 0
+        return float(sum(perf)) / float(len(perf))
+        
         
     def eval(self,**kwargs):
         
-        l = kwargs.get('l', 1.0)   #learnign rate
+        l = kwargs.get('l', 1.0)   #learning rate
         
         yg = self.y_gradient
         Bg = self.beta_gradient
         
+        #Perf metric
+        y1 = map(lambda x: self.evalexpectations(x),yg)
+        
         #Max Perf
-        indYmax = yg.index(max(yg))
-        self._perf = max(yg)
+        indYmax = y1.index(max(y1))
+        self._perf = max(y1)
+        
+        #log series of games
+        if kwargs.get('logbestrun',False):
+            print self.y_gradient[indYmax]
         
         #Based on Change, find new Betas
         xn = self.dimX

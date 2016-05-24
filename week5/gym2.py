@@ -150,7 +150,7 @@ def gameStrat(**kwargs):
         
         #display
         if kwargs.get("renderme",True):
-            env.render()
+            env.render(close=True)
         
            
         #end playing
@@ -169,7 +169,7 @@ def gameStrat(**kwargs):
             
             if kwargs.get('totalgames',False):
                 games = len(perfstrat)
-                if games > int(kwargs.get('totalgames',1)):
+                if games >= int(kwargs.get('totalgames',1)):
                     #print 'returning'
                     return perfstrat
             
@@ -180,15 +180,6 @@ def gameStrat(**kwargs):
         if ind > int(kwargs.get('keepgoing',999)):
             return perfstrat
     
-    
-            
-        
-def evalGames(perf):        
-    if not(perf):
-        print 'no perf'
-        return 0
-    avgind = float(sum(perf)) / float(len(perf))
-    return avgind
 
 #import optparse
 # p = optparse.OptionParser()
@@ -211,23 +202,22 @@ if __name__ == "__main__":
         while True:
         
             
-            var = [0,1,3]  
-            ep = [0.2,0.1,0.01]
+            var = [0,1,2,3]  
+            ep = [0.2,0.1,.005,0.01]
             
             algo.reset_ygradient()
             for point in algo.build_gradient(vars = var, eps = ep):
                 
                 algo.updateBeta(point)
                 
-                perf = gameStrat(strat = 6, totalgames=50,Algo=algo, \
-                                renderme = False, env = env)
+                perf = gameStrat(strat = 6, totalgames=20,Algo=algo, \
+                                renderme = True, env = env)
                 
-                y = evalGames(perf)
                 
-                algo.update_ygradient(y)    
+                algo.update_ygradient(perf)    
             
             #update algo
-            updateB = algo.eval()
+            updateB = algo.eval(l = 0.5, logbestrun=True)
             algo.updateBetaFinal(updateB)
             
             
