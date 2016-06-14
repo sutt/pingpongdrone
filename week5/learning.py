@@ -21,6 +21,7 @@ class Algo():
         
         #best perf, current perf, [0,inf), higher is better 
         self._perf = 0
+        
 
         
         #points in Beta-Space
@@ -32,6 +33,7 @@ class Algo():
         #for each el in betagradient, a correspoing  y(beta(i)) 
         self.y_gradient = []
         
+        self.y_misc = []
         
         
     def updateBeta(self,point,**kwargs):
@@ -45,9 +47,18 @@ class Algo():
             self.y_gradient.append([])
         else:
             self.y_gradient.append(y_eval)
-        
+    
+    def update_ymisc(self, ymisc,**kwargs):
+        if not(ymisc):
+            self.y_misc.append([])
+        else:
+            self.y_misc.append(ymisc)
+            
     def reset_ygradient(self):
         self.y_gradient = []
+    
+    def reset_ymisc(self):
+        self.y_misc = []
     
     def makeDec(self, obs,**kwargs):
         angle1 = obs[2]
@@ -122,6 +133,12 @@ class Algo():
         #log series of games
         if kwargs.get('logbestrun',False):
             print self.y_gradient[indYmax]
+            #pass
+        
+        if kwargs.get('logbestrunloss',False):
+            if self._perf > 300:
+                print self.y_misc[indYmax]
+                pass
         
         #Based on Change, find new Betas
         xn = self.dimX

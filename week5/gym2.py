@@ -87,6 +87,18 @@ def roundlist(inp,**kwargs):
     r = kwargs.get('r',0)
     return str([round(x,r) for x in inp])
     
+def explainloss(state,**kwargs):
+    #print state
+    angle,pos = state[2], state[0]   #.21
+    _angle,_pos = 15. * 3.14159 * 2. / 365. , 2.4
+    if (angle > abs(_angle)) & (pos > abs(_pos)):
+        return 3
+    if angle > abs(_angle):
+        return 1
+    if pos > abs(_pos):
+        return 2
+    return 0
+    
 def logit(**kwargs):
     if kwargs.get('stratstart',False):
         print 'STRAT: ', str(kwargs.get('stratstart','None')), '------'
@@ -101,6 +113,11 @@ def logit(**kwargs):
         state = map(lambda x: round(x,2), state)
         print state
         return 1
+    
+    if kwargs.get('logendgame',False):
+        state = kwargs.get('logstep',None)['state']
+        loss = explainloss(state)
+        
         
     if kwargs.get('logMt',False) :
         inp = kwargs.get('logMt',False)
@@ -133,6 +150,7 @@ def gameStrat(**kwargs):
     #obs-memory
     perfstrat = []
     state = []
+    lossreason = []
     
     while True:
 
@@ -157,13 +175,16 @@ def gameStrat(**kwargs):
         if done:
             
             perfstrat.append(ind)
+            lossreason.append(explainloss(obs))
             
             if kwargs.get('continuesteps',False):
                 if ind > int(kwargs.get('continuesteps',100)):
                     continue
             
             if kwargs.get('logendgame',False):
-                logit(logendgame = {'ind':ind,'state':env.state})
+                logit(logendgame = {'state':env.state})
+                
+                
             if kwargs.get('justone',False):
                 return perfstrat
             
@@ -171,14 +192,15 @@ def gameStrat(**kwargs):
                 games = len(perfstrat)
                 if games >= int(kwargs.get('totalgames',1)):
                     #print 'returning'
-                    return perfstrat
+                    return {'perf': perfstrat,  'loss': lossreason}
+                            
             
             
             env.reset()
             ind = 0
             
-        if ind > int(kwargs.get('keepgoing',999)):
-            return perfstrat
+    return 0
+
     
 
 #import optparse
@@ -206,18 +228,20 @@ if __name__ == "__main__":
             ep = [0.2,0.1,.005,0.01]
             
             algo.reset_ygradient()
+            algo.reset_ymisc()
             for point in algo.build_gradient(vars = var, eps = ep):
                 
                 algo.updateBeta(point)
                 
-                perf = gameStrat(strat = 6, totalgames=20,Algo=algo, \
+                ret = gameStrat(strat = 6, totalgames=50,Algo=algo, \
                                 renderme = True, env = env)
                 
                 
-                algo.update_ygradient(perf)    
-            
+                algo.update_ygradient(ret['perf'])   
+                algo.update_ymisc(ret['loss'])
+                
             #update algo
-            updateB = algo.eval(l = 0.5, logbestrun=True)
+            updateB = algo.eval(l = 0.5, logbestrun=True, logbestrunloss=True)
             algo.updateBetaFinal(updateB)
             
             
@@ -225,7 +249,7 @@ if __name__ == "__main__":
             
             #Exit Training Conditions
             ind += 1
-            if algo._perf > 500:
+            if algo._perf > 5000:
                 break
                 
         #Print summary of loop outcome
