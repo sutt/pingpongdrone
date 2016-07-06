@@ -136,8 +136,10 @@ class Algo():
             #pass
         
         if kwargs.get('logbestrunloss',False):
-            if self._perf > 300:
-                print self.y_misc[indYmax]
+            if self._perf > 300 or True:
+                s = str(self.y_misc[indYmax])
+                #s = str("\n".join(self.y_misc[indYmax]))
+                print 'Best run loss: ', s
                 pass
         
         #Based on Change, find new Betas

@@ -90,14 +90,22 @@ def roundlist(inp,**kwargs):
 def explainloss(state,**kwargs):
     #print state
     angle,pos = state[2], state[0]   #.21
-    _angle,_pos = 15. * 3.14159 * 2. / 365. , 2.4
-    if (angle > abs(_angle)) & (pos > abs(_pos)):
+    _angle,_pos = 15. * 3.14159 * 2. / 360. , 2.4
+    #0.25821287671232873
+    if (abs(angle) > _angle) & (abs(pos) > _pos):
         return 3
-    if angle > abs(_angle):
+    if abs(angle) > _angle:
         return 1
-    if pos > abs(_pos):
+    if abs(pos) > _pos:
         return 2
+    #s = "\n".join([str(i)+": "+str(v)[:6] for i,v in enumerate(state)])
+    s = str(state[2])[:5]+"\n"
+    
+    #oh! because you've recovered in state(s) from state(s-1), explain loss from state(s-1)?
+    #print s
     return 0
+    #s = "\n".join([str(i)+": "+str(v)[:4] for i,v in enumerate(state)])
+    #return s
     
 def logit(**kwargs):
     if kwargs.get('stratstart',False):
@@ -155,10 +163,10 @@ def gameStrat(**kwargs):
     while True:
 
         #play
-        obs = env.state
+        obs0 = env.state
         
         # strategize(env,extras = {previous obs, ind, etc...})
-        action = strategize(obs,strat,env= env, t=ind, algo=algo)
+        action = strategize(obs0,strat,env= env, t=ind, algo=algo)
         #logit(logstep = {'state':obs,'action':action})           
         
         #step
@@ -182,7 +190,7 @@ def gameStrat(**kwargs):
                     continue
             
             if kwargs.get('logendgame',False):
-                logit(logendgame = {'state':env.state})
+                logit(logendgame = {'state':env.state,'state0':obs0})
                 
                 
             if kwargs.get('justone',False):
