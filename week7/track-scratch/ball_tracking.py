@@ -15,6 +15,8 @@ ap.add_argument("-v", "--video",
         help="path to the (optional) video file")
 ap.add_argument("-b", "--buffer", type=int, default=64,
         help="max buffer size")
+ap.add_argument("-m", "--mirror", type=int, default=0,
+        help="mirror image display, use 1")
 args = vars(ap.parse_args())
 
 # define the lower and upper boundaries of the "green"
@@ -38,8 +40,9 @@ while True:
     # grab the current frame
     (grabbed, frame) = camera.read()
 
-
-
+    Mirror = args["mirror"]
+    if bool(Mirror):
+        frame = cv2.flip(frame,1)
 
     # if we are viewing a video and we did not grab a frame,
     # then we have reached the end of the video
