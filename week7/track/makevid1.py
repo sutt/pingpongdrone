@@ -30,7 +30,7 @@ def vid():
     to = TrackObj()
     do = DrawObj()
     dispobj = DisplayObj(raw=False)
-    loop = LoopObj(timeout = 20)
+    loop = LoopObj(timeout = 10)
     
     while(cam.cam.isOpened()):
         try:
@@ -38,7 +38,7 @@ def vid():
             if ret:
                 to.track_obj(frame, min_radius = 10)
                 do.draw_onto_frame(frame, to.center, to.radius)
-                if dispobj.display(frame=frame,frame2=do.frame2): break
+                if dispobj.display(frame=frame,frame2=do.frame2, mirror = True): break
                 cam.save_video_frame(frame)
                 if loop.log_run(frame): break
         except:

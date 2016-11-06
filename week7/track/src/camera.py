@@ -33,7 +33,8 @@ class MyCam:
     
     def set_vw_fourcc(self,cd,**kwargs):
         #cd = "x264"
-        self.vw_fourcc = cv2.VideoWriter_fourcc(cd[0],cd[1],cd[2],cd[3])
+        self.vw_fourcc = -1
+        #self.vw_fourcc = cv2.VideoWriter_fourcc(cd[0],cd[1],cd[2],cd[3])
         #fourcc = cv2.VideoWriter_fourcc("M","P","4"," ")
         #Logitech Video I420 works
         #default:-466162819.0
@@ -67,10 +68,11 @@ class MyCam:
         """ optional args: dir ext Log """
         
         outfps,outshape = 30, (640,480)
-        self.set_vw_fourcc('x264')
+        self.set_vw_fourcc('h264')
         
-        if len(kwargs.get('dir','')):
-            path =  kwargs.get('dir', '')
+        inp_dir = kwargs.get('dir','')
+        if len(inp_dir):
+            path =  inp_dir
         else:    
             path = os.path.join(os.getcwd(), 'data')    
         
@@ -79,28 +81,33 @@ class MyCam:
         
         i = 0
         while(True):
+            
             i += 1
             fn = "output" + str(i)
-            fn += kwargs.get("ext",".avi") 
-                
+            
             if fn in files:
                 continue    
             else:
-                path_fn = os.path.join(path,fn)    
+                fn += kwargs.get("ext",".avi") 
+                path_fn = os.path.join(path,fn)
+                
                 vidWriter = cv2.VideoWriter(path_fn, self.vw_fourcc,outfps,outshape)
                 break    
                 
         self.vidWriter = vidWriter
         if kwargs.get('Log',False):
             print vidWriter
+            print path_fn
             
     def save_video_frame(self,frame,**kwargs):
         if not(self.savevid):
             return 0
         try:
             self.vidWriter.write(frame)
+            print 'saved'
         except:
             return 0
+            print 'not svaed'
         
     def cleanup_cam(self, **kwargs):
         self.cam.release()

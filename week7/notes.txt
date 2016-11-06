@@ -1,0 +1,38 @@
+
+if .py document isn't indenting properly, then use 
+    python/tools/scripts/reindent.py <document.py path>
+    
+TODO 11/4
+    
+    Basic camera setup
+        test with script
+    
+    Build a better writing demo
+        
+        apply test driven dev
+            record some samples, and do different operation on them
+        
+        Writing effects
+            accel sets whether writing applies, or the thickness at least
+                derive accel
+                apply lead, lag, and averaging
+            
+            slower decay
+        
+        Avoid FP's
+            derive an "fp mask", sample the background for 5seconds, 
+            since the camera, background doesn't change
+            
+            take any region that matches and put it on a suspect list
+            regions on this list wont register a match unless none other is found
+            
+            Could create a re-imbue, if two matches, put the tip right up to the camera and establish that as the main one, then use nearest neighbors tracking to establish the true object
+        
+        Show off
+            write your name
+            show against whiteboard illustrating drone quidditch
+        
+            gif creator from videos
+    
+            
+            

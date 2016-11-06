@@ -13,10 +13,16 @@ class DisplayObj:
     def display(self,frame,**kwargs):
         
         frame2 = kwargs.get('frame2' , None)
-        if not(self.raw) and ( frame2 != None):
-            cv2.imshow('frame',frame2)
+        
+        if not(self.raw) and ( frame2 is not None):
+            frame_show = frame2
         else:
-            cv2.imshow('frame',frame)
+            frame_show = frame
+            
+        if kwargs.get('mirror',False):
+            frame_show = cv2.flip(frame_show,1)
+            
+        cv2.imshow('frame',frame_show)
         
         #push this into log_run check
         if cv2.waitKey(1) & 0xFF == ord('q'):
