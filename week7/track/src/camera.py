@@ -13,7 +13,7 @@ class MyCam:
         self.savevid = savevid
         self.vidWriter = None
         self.vw_fourcc = -1
-        self.cam_params = {}
+        self.cam_params = {'fps':30, 'fshape': (640,480)}
         
     def get_params(self, **kwargs):
         
@@ -27,47 +27,71 @@ class MyCam:
         ret = [self.cam.get(p) for p in _params]
         
         if kwargs.get('Log',False):
-            print ret
+            print 'camget: ', str(ret)
         
         return ret
     
     def set_vw_fourcc(self,cd,**kwargs):
-        #cd = "x264"
-        self.vw_fourcc = -1
+        #cd = "h264"
+        #self.vw_fourcc = -1
         #self.vw_fourcc = cv2.VideoWriter_fourcc(cd[0],cd[1],cd[2],cd[3])
-        #fourcc = cv2.VideoWriter_fourcc("M","P","4"," ")
+        fourcc = cv2.VideoWriter_fourcc("M","P","4"," ")
+        
         #Logitech Video I420 works
         #default:-466162819.0
         #divx, xvid, h264, x264, mjpg, wmv?
 
-    def set_params(self, arg, **kwargs):
+    def set_params(self, **kwargs):
     
        # First set codec, then fps, then h/w #http://stackoverflow.com/questions/16092802/capturing-1080p-at-30fps-from-logitech-c920-with-opencv-2-4-3
         if kwargs.get('toggleframe', False):
             try:
-                rrr,fff = cam.read()
+                rrr,fff = self.cam.read()
             except:
                 print 'couldnt toggle'
             
-        #cam.set(_fourcc,fourcc)
+        #cam.set(_fourcc,fourcc)    
         #cam.set(_fourcc,cam.get(_fourcc))
         #_I420 2304,1536, fps=2
-        #cam.set(_fps,30)
-        #cam.set(_fw,1920)
-        #cam.set(_fh,1080)
         
-        if kwargs.get('setsize',False):
-            outshape = (1920,1080)
-            outfps = 1000    
-        else:
-            outshape = (640,480)
-            outfps = 30
+        #Solution is to set the fourCC codec before setting camera height and width.	
+        #if you want to set fps(must be supported by camera), you have to do it after codec setting, but before width/height settings
+        
+        self.cam.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('x','2','6','4'))    
+        
+        outfps = kwargs.get( 'fps' , self.cam_params.get('fps', 30) )
+        self.cam.set(cv2.CAP_PROP_FPS, outfps)
+        
+        _fw = cv2.CAP_PROP_FRAME_WIDTH 
+        _fh = cv2.CAP_PROP_FRAME_HEIGHT
+        #self.cam.set(_fw,1920)
+        #self.cam.set(_fh,1080)
+        
+        
+        
+        
+        #cam.set(_fps,30)
+        
+        #self.cam.set(_fw,1920)
+        #self.cam.set(_fh,1080)
+        #self.cam_params['fshape'] =  (1920,1080)
+        #outshape = (1920,1080)
+        #outshape = (640,480)
+        
+        
         
     
     def setup_save_video(self,**kwargs):
         """ optional args: dir ext Log """
         
-        outfps,outshape = 30, (640,480)
+        inp_fps = kwargs.get('fps', 0)
+        if inp_fps == 0:
+            outfps = self.cam_params.get('fps',17)
+        else:
+            outfps = inp_fps
+            
+        outshape  = self.cam_params.get('fshape',(640,480))
+        
         self.set_vw_fourcc('h264')
         
         inp_dir = kwargs.get('dir','')
@@ -88,13 +112,14 @@ class MyCam:
             if fn in files:
                 continue    
             else:
-                fn += kwargs.get("ext",".avi") 
+                fn += kwargs.get("ext",".mp4") 
                 path_fn = os.path.join(path,fn)
                 
                 vidWriter = cv2.VideoWriter(path_fn, self.vw_fourcc,outfps,outshape)
                 break    
                 
         self.vidWriter = vidWriter
+        
         if kwargs.get('Log',False):
             print vidWriter
             print path_fn
@@ -104,10 +129,9 @@ class MyCam:
             return 0
         try:
             self.vidWriter.write(frame)
-            print 'saved'
         except:
+            print 'nah'
             return 0
-            print 'not svaed'
         
     def cleanup_cam(self, **kwargs):
         self.cam.release()

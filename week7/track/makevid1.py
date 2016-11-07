@@ -22,10 +22,11 @@ args = vars(ap.parse_args())
 
 def vid():
     
-    cam  =  MyCam( device_num = int(args["externalcam"]) )
-    #cam.set_params(toggleframe=True)    
+    cam  =  MyCam( device_num = int(args["externalcam"]), savevid = False )
     cam.get_params(Log=True)
-    cam.setup_save_video(ext=".avi",Log=True)
+    cam.set_params(toggleframe=True, fps = 30)    
+    cam.get_params(Log=True)
+    cam.setup_save_video(ext=".avi",Log=True,fps = 30)
     
     to = TrackObj()
     do = DrawObj()
@@ -36,17 +37,18 @@ def vid():
         try:
             ret,frame = cam.cam.read()  #make this method and time it
             if ret:
+                print str(frame.shape)
                 to.track_obj(frame, min_radius = 10)
                 do.draw_onto_frame(frame, to.center, to.radius)
-                if dispobj.display(frame=frame,frame2=do.frame2, mirror = True): break
+                if dispobj.display(frame=frame,frame2=do.frame2, mirror = True, dontdisplay = True): break
                 cam.save_video_frame(frame)
-                if loop.log_run(frame): break
-        except:
-            if loop.cam_read_except(): break
+                if loop.log_run(frame, Log=False): break
+        except Exception as e:
+            if loop.cam_read_except(e=e): break
                 
     cam.cleanup_cam(Log=True)
     cv2.destroyAllWindows()  #move this into disp.clean loop.clean
-    log_run()
+    loop.summarize_run()    
     return 1
     
 vid()

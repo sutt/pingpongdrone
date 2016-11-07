@@ -1,11 +1,18 @@
 
 #TODO 11/6
 
-    # X output fn increment has a bug?
+    # FIX output fn increment has a bug?
+    # FIX != None is not None
+    # log timing
+    # error handling within object funtions?
     
-    #log timing
+ 
+#   Even though I realise this is an old question, I'd like to suggest using the traceback module to handle output of the exceptions.
+#Use traceback.print_exc() to print the current exception to standard error, just like it would be printed if it remained uncaught, or traceback.format_exc() to get the same output as a string. You can pass various arguments to either of those functions if you want to limit the output, or redirect the printing to a file-like object.
+
+#Got VLC 2.2.4
     
-    # X != None is not None
+    
     
 a = None
 if a != None:
